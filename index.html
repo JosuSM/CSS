@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jailbroken</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar__container">
+            <a href="/" id="navbar__logo"><i class="fas fa-chain-broken"></i>Jailbroken</a>
+            
+            <div class="navbar__toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            
+            <ul class="navbar__menu">
+                <li class="navbar__item"><a href="/" class="navbar__links">Home</a></li>
+                <li class="navbar__item"><a href="/" class="navbar__links">Services</a></li>
+                <li class="navbar__item"><a href="/" class="navbar__links">Products</a></li>
+                <li class="navbar__btn"><a href="#signup" class="button" id="open-modal-btn">Sign Up</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="main">
+        <div class="main__container">
+            <div class="main__content">
+                <h1>UNCHAIN</h1>
+                <h1>YOUR POTENTIAL</h1>
+                <p>THE KEYS OF YOUR FREEDOM ARE HERE.</p>
+                <button class="main__btn"><a href="Warning.html">Get Started</a></button>
+            </div>
+            <div class="main__im--container">
+                <img src="v9_7.png" alt="Technology Graphic" id="main__img">
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer">
+        <p>Built with <i class="fas fa-heart"></i> for the Web</p>
+        <div style="margin-top: 10px;">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+            <a href="#"><i class="fab fa-reddit"></i></a>
+        </div>
+    </footer>
+
+    <div id="signup-modal" class="modal">
+        <div class="modal-content container">
+            <span class="close" id="close-modal-btn">&times;</span>
+            <h2>Sign Up</h2>
+            <p>Please fill in this form to create an account.</p>
+            <hr>
+
+            <label for="email"><b>Email</b></label>
+            <input type="text" placeholder="Enter Email" name="email" required>
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required>
+
+            <label for="psw-repeat"><b>Repeat Password</b></label>
+            <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+
+            <div class="clearfix">
+                <button type="button" class="cancelbtn" id="cancel-btn">Cancel</button>
+                <button type="submit" class="signupbtn">Sign Up</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Mobile Hamburger Menu Logic ---
+        const mobileMenu = document.querySelector('#mobile-menu');
+        const navbarMenu = document.querySelector('.navbar__menu');
+
+        mobileMenu.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            navbarMenu.classList.toggle('active');
+        });
+
+        // --- Modal Logic ---
+        const modal = document.getElementById('signup-modal');
+        const openModalBtn = document.getElementById('open-modal-btn');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+
+        // Open modal
+        openModalBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link behavior
+            modal.style.display = 'block';
+        });
+
+        // Close modal functions
+        const closeModal = () => {
+            modal.style.display = 'none';
+        };
+
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Close modal if user clicks anywhere outside of the modal content
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

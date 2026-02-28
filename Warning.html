@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warning - Jailbreak</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background-color: #111;
+            /* Textura de parede de tijolos com uma sobreposição escura */
+            background-image: 
+                linear-gradient(rgba(10, 10, 20, 0.85), rgba(10, 10, 20, 0.85)), 
+                url('v9_12.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace; /* Fonte estilo terminal */
+        }
+
+        /* Caixa principal com borda néon gradiente */
+        .neon-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            padding: 50px 30px 30px 30px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Brilho externo subtil */
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 30px rgba(255, 0, 255, 0.2);
+        }
+
+        /* Máscara avançada para criar a borda néon perfeitamente contínua */
+        .neon-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 4px; /* Espessura da borda néon */
+            background: linear-gradient(135deg, #00ffff 0%, #ff00ff 100%);
+            -webkit-mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask: 
+                linear-gradient(#fff 0 0) content-box, 
+                linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+            box-shadow: inset 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+
+        /* Botão do ícone de aviso */
+        .warning-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: -40px; /* Faz o ícone sobrepor a caixa preta */
+            z-index: 10;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .warning-btn:hover {
+            transform: scale(1.08);
+            filter: drop-shadow(0 0 15px rgba(255, 204, 0, 0.6));
+        }
+
+        .warning-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Caixa preta de texto */
+        .black-box {
+            background-color: #000000;
+            border: 2px solid #222;
+            border-radius: 15px;
+            padding: 50px 30px 30px 30px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.9);
+        }
+
+        .title {
+            color: #ff0000;
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+        }
+
+        .message {
+            color: #ffffff;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Responsividade para ecrãs menores */
+        @media (max-width: 600px) {
+            .message {
+                font-size: 0.95rem;
+            }
+            .title {
+                font-size: 1.2rem;
+            }
+            .neon-container {
+                padding: 40px 20px 20px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="neon-container">
+        <button class="warning-btn" onclick="iniciarAcao()">
+            <svg viewBox="0 0 100 100" width="160" height="160">
+                <polygon points="50,15 90,85 10,85" fill="#fbc02d" stroke="#000" stroke-width="10" stroke-linejoin="round"/>
+                <line x1="50" y1="38" x2="50" y2="62" stroke="#000" stroke-width="11" stroke-linecap="round"/>
+                <circle cx="50" cy="76" r="5.5" fill="#000"/>
+            </svg>
+        </button>
+
+        <div class="black-box">
+            <h2 class="title">Warning!</h2>
+            <p class="message">This methods of jailbreak can possibly break your device. If you proceed, you will lose your warranty. I am not responsible for your actions, keep in mind. You have been warned. To continue click in the yellow icon.</p>
+        </div>
+    </div>
+
+    <script>
+        // Função ativada ao clicar no triângulo amarelo
+        function iniciarAcao() {
+            // Podes substituir o alert() abaixo pelo teu código de redirecionamento.
+            // Exemplo: window.location.href = "pagina_seguinte.html";
+            alert("Aviso lido e aceite. A preparar o processo de Jailbreak...");
+        }
+    </script>
+
+</body>
+</html>
