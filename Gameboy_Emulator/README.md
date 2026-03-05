@@ -19,6 +19,7 @@ There are no tests at the moment
 ## Authors
 
 * **Victor Poupet** - *Initial work* - [vpoupet](https://github.com/vpoupet)
+* **Josué Macedo** - *Modifications* - [JosuSM](https://github.com/JosuSM) (I am not affiliated with vpoupep, only a great fan of his work).
 
 ## License
 
