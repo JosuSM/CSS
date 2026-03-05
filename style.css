@@ -47,8 +47,8 @@
     font-size: 2rem;
 }
 
-.fa-chain-broken {
-    margin-right: 0.5rem;
+.fa-record-vinyl {
+    margin-right: 1rem;
 }
 
 .navbar__menu {
@@ -200,11 +200,22 @@
    HERO / MAIN SECTION
    ========================================= */
 .main {
-    background-image: url(v9_12.png);
-    background-size: cover;
-    background-position: center;
     height: 100vh;
     display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.main::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url(gameboycolor-1772714242973-3043.jpg);
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px);
+    transform: scale(1.06);
+    z-index: 0;
 }
 
 .main__container {
@@ -214,6 +225,7 @@
     justify-self: center;
     margin: auto;
     height: 90vh;
+    position: relative;
     z-index: 1;
     width: 100%;
     max-width: 1300px;
@@ -308,6 +320,7 @@
 #main__img {
     height: 80%;
     width: 80%;
+    border-radius: 24px;
 }
 
 @media screen and (max-width: 960px) {

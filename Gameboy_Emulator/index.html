@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="modulepreload" href="src/cpu.js">
+    <link rel="modulepreload" href="src/dmg.js">
+    <link rel="modulepreload" href="src/mmu.js">
+    <link rel="modulepreload" href="src/opcodes.js">
+    <link rel="modulepreload" href="src/ppu.js">
+    <link rel="modulepreload" href="src/sound.js">
+  </head>
+  <body>
+    <div id="gameboy">
+      <div id="screen-bg"></div>
+      <div id="parallax"></div>
+      <canvas class="screen-layer" id="screen-bg-back"></canvas>
+      <canvas class="screen-layer" id="screen-obj-back"></canvas>
+      <canvas class="screen-layer" id="screen-bg-font"></canvas>
+      <canvas class="screen-layer" id="screen-obj-front"></canvas><img id="frame" src="img/gb_annotated.png">
+      <div class="button" id="button-a"></div>
+      <div class="button" id="button-b"></div>
+      <div class="button" id="button-start"></div>
+      <div class="button" id="button-select"></div>
+      <div class="button" id="button-up"></div>
+      <div class="button" id="button-down"></div>
+      <div class="button" id="button-left"></div>
+      <div class="button" id="button-right"></div>
+    </div>
+    <div id="other">
+      <div id="rom">
+        <select id="rom-select" name="rom">
+          <optgroup label="ROMs">
+            <option value="4-in-1 Fun Pak (USA, Europe).gb">4-in-1 Fun Pak (USA, Europe)</option>
+            <option value="4-in-1 Fun Pak Volume II (USA, Europe).gb">4-in-1 Fun Pak Volume II (USA, Europe)</option>
+            <option value="Addams Family, The - Pugsley's Scavenger Hunt (USA, Europe).gb">Addams Family, The - Pugsley's Scavenger Hunt (USA, Europe)</option>
+            <option value="Addams Family, The (USA).gb">Addams Family, The (USA)</option>
+            <option value="Adventure Island II - Aliens in Paradise (USA, Europe).gb">Adventure Island II - Aliens in Paradise (USA, Europe)</option>
+            <option value="Adventure Island (USA, Europe).gb">Adventure Island (USA, Europe)</option>
+            <option value="Adventures of Rocky and Bullwinkle and Friends, The (USA).gb">Adventures of Rocky and Bullwinkle and Friends, The (USA)</option>
+            <option value="Adventures of Star Saver, The (USA, Europe).gb">Adventures of Star Saver, The (USA, Europe)</option>
+            <option value="Aerostar (USA, Europe).gb">Aerostar (USA, Europe)</option>
+            <option value="Aladdin (USA) (SGB Enhanced).gb">Aladdin (USA) (SGB Enhanced)</option>
+            <option value="Alfred Chicken (USA).gb">Alfred Chicken (USA)</option>
+            <option value="Alien 3 (USA, Europe).gb">Alien 3 (USA, Europe)</option>
+            <option value="Alien vs Predator - The Last of His Clan (USA).gb">Alien vs Predator - The Last of His Clan (USA)</option>
+            <option value="Alleyway (World).gb">Alleyway (World)</option>
+            <option value="All-Star Baseball 99 (USA).gb">All-Star Baseball 99 (USA)</option>
+            <option value="Altered Space - A 3-D Alien Adventure (USA).gb">Altered Space - A 3-D Alien Adventure (USA)</option>
+            <option value="Amazing Penguin (USA, Europe).gb">Amazing Penguin (USA, Europe)</option>
+            <option value="Amazing Spider-Man, The (USA, Europe).gb">Amazing Spider-Man, The (USA, Europe)</option>
+            <option value="A-mazing Tater (USA).gb">A-mazing Tater (USA)</option>
+            <option value="Animaniacs (USA) (SGB Enhanced).gb">Animaniacs (USA) (SGB Enhanced)</option>
+            <option value="Arcade Classic No. 1 - Asteroids &amp; Missile Command (USA, Europe) (SGB Enhanced).gb">Arcade Classic No. 1 - Asteroids &amp; Missile Command (USA, Europe) (SGB Enhanced)</option>
+            <option value="Arcade Classic No. 2 - Centipede &amp; Millipede (USA, Europe) (SGB Enhanced).gb">Arcade Classic No. 2 - Centipede &amp; Millipede (USA, Europe) (SGB Enhanced)</option>
+            <option value="Arcade Classic No. 3 - Galaga &amp; Galaxian (USA) (SGB Enhanced).gb">Arcade Classic No. 3 - Galaga &amp; Galaxian (USA) (SGB Enhanced)</option>
+            <option value="Arcade Classic No. 4 - Defender &amp; Joust (USA, Europe) (SGB Enhanced).gb">Arcade Classic No. 4 - Defender &amp; Joust (USA, Europe) (SGB Enhanced)</option>
+            <option value="Arcade Classics - Battlezone &amp; Super Breakout (USA, Europe) (SGB Enhanced).gb">Arcade Classics - Battlezone &amp; Super Breakout (USA, Europe) (SGB Enhanced)</option>
+            <option value="Asteroids (USA, Europe).gb">Asteroids (USA, Europe)</option>
+            <option value="Atomic Punk (USA).gb">Atomic Punk (USA)</option>
+            <option value="Attack of the Killer Tomatoes (USA, Europe).gb">Attack of the Killer Tomatoes (USA, Europe)</option>
+            <option value="Avenging Spirit (USA, Europe).gb">Avenging Spirit (USA, Europe)</option>
+            <option value="Balloon Kid (USA, Europe).gb">Balloon Kid (USA, Europe)</option>
+            <option value="Barbie - Game Girl (USA, Europe).gb">Barbie - Game Girl (USA, Europe)</option>
+            <option value="Bart Simpson's Escape from Camp Deadly (USA, Europe).gb">Bart Simpson's Escape from Camp Deadly (USA, Europe)</option>
+            <option value="Baseball (World).gb">Baseball (World)</option>
+            <option value="Bases Loaded for Game Boy (USA).gb">Bases Loaded for Game Boy (USA)</option>
+            <option value="Batman Forever (USA, Europe).gb">Batman Forever (USA, Europe)</option>
+            <option value="Batman.gb">Batman</option>
+            <option value="Batman - Return of the Joker (USA, Europe).gb">Batman - Return of the Joker (USA, Europe)</option>
+            <option value="Batman - The Animated Series (USA, Europe).gb">Batman - The Animated Series (USA, Europe)</option>
+            <option value="Batman - The Video Game (World).gb">Batman - The Video Game (World)</option>
+            <option value="Battle Arena Toshinden (USA) (SGB Enhanced).gb">Battle Arena Toshinden (USA) (SGB Enhanced)</option>
+            <option value="Battle Bull (USA).gb">Battle Bull (USA)</option>
+            <option value="Battleship (USA, Europe).gb">Battleship (USA, Europe)</option>
+            <option value="Battletoads-Double Dragon (USA).gb">Battletoads-Double Dragon (USA)</option>
+            <option value="Battletoads in Ragnarok's World (USA).gb">Battletoads in Ragnarok's World (USA)</option>
+            <option value="Battletoads (USA, Europe).gb">Battletoads (USA, Europe)</option>
+            <option value="Battle Unit Zeoth (USA, Europe).gb">Battle Unit Zeoth (USA, Europe)</option>
+            <option value="Beavis and Butt-Head (USA, Europe).gb">Beavis and Butt-Head (USA, Europe)</option>
+            <option value="Beetlejuice (USA).gb">Beetlejuice (USA)</option>
+            <option value="Best of the Best - Championship Karate (USA).gb">Best of the Best - Championship Karate (USA)</option>
+            <option value="Bill Elliott's NASCAR Fast Tracks (USA).gb">Bill Elliott's NASCAR Fast Tracks (USA)</option>
+            <option value="Bill &amp; Ted's Excellent Game Boy Adventure (USA, Europe).gb">Bill &amp; Ted's Excellent Game Boy Adventure (USA, Europe)</option>
+            <option value="Bionic Battler (USA).gb">Bionic Battler (USA)</option>
+            <option value="Bionic Commando (USA).gb">Bionic Commando (USA)</option>
+            <option value="Black Bass - Lure Fishing (USA).gb">Black Bass - Lure Fishing (USA)</option>
+            <option value="Blades of Steel (USA).gb">Blades of Steel (USA)</option>
+            <option value="blargg/cputest.gb">blargg/cputest</option>
+            <option value="blargg/instr_timing_test.gb">blargg/instr_timing_test</option>
+            <option value="blargg/interrupt_test.gb">blargg/interrupt_test</option>
+            <option value="blargg/mem_timing_test2.gb">blargg/mem_timing_test2</option>
+            <option value="blargg/mem_timing_test.gb">blargg/mem_timing_test</option>
+            <option value="Blaster Master Boy (USA).gb">Blaster Master Boy (USA)</option>
+            <option value="Blues Brothers, The (USA, Europe).gb">Blues Brothers, The (USA, Europe)</option>
+            <option value="Boggle Plus (USA).gb">Boggle Plus (USA)</option>
+            <option value="Bo Jackson - Two Games in One (USA).gb">Bo Jackson - Two Games in One (USA)</option>
+            <option value="Bomberman GB (USA, Europe) (SGB Enhanced).gb">Bomberman GB (USA, Europe) (SGB Enhanced)</option>
+            <option value="Bonk's Adventure (USA).gb">Bonk's Adventure (USA)</option>
+            <option value="Boomer's Adventure in ASMIK World (USA).gb">Boomer's Adventure in ASMIK World (USA)</option>
+            <option value="Boxxle II (USA, Europe).gb">Boxxle II (USA, Europe)</option>
+            <option value="Brain Bender (USA).gb">Brain Bender (USA)</option>
+            <option value="Brain Drain (USA) (SGB Enhanced).gb">Brain Drain (USA) (SGB Enhanced)</option>
+            <option value="Bram Stoker's Dracula (USA, Europe).gb">Bram Stoker's Dracula (USA, Europe)</option>
+            <option value="BreakThru! (USA).gb">BreakThru! (USA)</option>
+            <option value="Bubble Bobble Part 2 (USA, Europe).gb">Bubble Bobble Part 2 (USA, Europe)</option>
+            <option value="Bubble Bobble (USA, Europe).gb">Bubble Bobble (USA, Europe)</option>
+            <option value="Bubble Ghost.gb">Bubble Ghost</option>
+            <option value="Bubble Ghost (USA, Europe).gb">Bubble Ghost (USA, Europe)</option>
+            <option value="Bubsy II (USA).gb">Bubsy II (USA)</option>
+            <option value="Bugs Bunny Crazy Castle 2, The (USA).gb">Bugs Bunny Crazy Castle 2, The (USA)</option>
+            <option value="Bugs Bunny Crazy Castle, The (USA, Europe).gb">Bugs Bunny Crazy Castle, The (USA, Europe)</option>
+            <option value="Burai Fighter Deluxe (USA, Europe).gb">Burai Fighter Deluxe (USA, Europe)</option>
+            <option value="BurgerTime Deluxe (World).gb">BurgerTime Deluxe (World)</option>
+            <option value="Bust-A-Move 2 - Arcade Edition (USA, Europe).gb">Bust-A-Move 2 - Arcade Edition (USA, Europe)</option>
+            <option value="Buster Bros. (USA).gb">Buster Bros. (USA)</option>
+            <option value="Captain America and the Avengers (USA).gb">Captain America and the Avengers (USA)</option>
+            <option value="Casino FunPak (USA, Europe).gb">Casino FunPak (USA, Europe)</option>
+            <option value="Casper (USA).gb">Casper (USA)</option>
+            <option value="Castelian (USA).gb">Castelian (USA)</option>
+            <option value="Castlevania II - Belmont's Revenge (USA, Europe).gb">Castlevania II - Belmont's Revenge (USA, Europe)</option>
+            <option value="Castlevania Legends (USA, Europe) (SGB Enhanced).gb">Castlevania Legends (USA, Europe) (SGB Enhanced)</option>
+            <option value="Castlevania - The Adventure (USA).gb">Castlevania - The Adventure (USA)</option>
+            <option value="Catrap (USA).gb">Catrap (USA)</option>
+            <option value="Centipede (USA, Europe).gb">Centipede (USA, Europe)</option>
+            <option value="Centipede (USA).gb">Centipede (USA)</option>
+            <option value="Championship Pool (USA).gb">Championship Pool (USA)</option>
+            <option value="Chase H.Q. (USA, Europe).gb">Chase H.Q. (USA, Europe)</option>
+            <option value="Chessmaster, The (DMG-N5) (USA).gb">Chessmaster, The (DMG-N5) (USA)</option>
+            <option value="Choplifter II - Rescue &amp; Survive (USA).gb">Choplifter II - Rescue &amp; Survive (USA)</option>
+            <option value="Chuck Rock (USA, Europe).gb">Chuck Rock (USA, Europe)</option>
+            <option value="Cliffhanger (USA, Europe).gb">Cliffhanger (USA, Europe)</option>
+            <option value="College Slam (USA).gb">College Slam (USA)</option>
+            <option value="Contra - The Alien Wars (USA) (SGB Enhanced).gb">Contra - The Alien Wars (USA) (SGB Enhanced)</option>
+            <option value="Cool Ball (USA).gb">Cool Ball (USA)</option>
+            <option value="Cool Spot (USA).gb">Cool Spot (USA)</option>
+            <option value="Cool World (USA, Europe).gb">Cool World (USA, Europe)</option>
+            <option value="Cosmo Tank (USA).gb">Cosmo Tank (USA)</option>
+            <option value="Crystal Quest (USA).gb">Crystal Quest (USA)</option>
+            <option value="CutThroat Island (USA, Europe).gb">CutThroat Island (USA, Europe)</option>
+            <option value="Cyraid (USA).gb">Cyraid (USA)</option>
+            <option value="Daedalian Opus (USA).gb">Daedalian Opus (USA)</option>
+            <option value="Daffy Duck (USA, Europe) (SGB Enhanced).gb">Daffy Duck (USA, Europe) (SGB Enhanced)</option>
+            <option value="Darkman (USA, Europe).gb">Darkman (USA, Europe)</option>
+            <option value="Darkwing Duck (USA).gb">Darkwing Duck (USA)</option>
+            <option value="David Crane's The Rescue of Princess Blobette Starring A Boy and His Blob (USA).gb">David Crane's The Rescue of Princess Blobette Starring A Boy and His Blob (USA)</option>
+            <option value="Days of Thunder (USA, Europe).gb">Days of Thunder (USA, Europe)</option>
+            <option value="Dead Heat Scramble (USA).gb">Dead Heat Scramble (USA)</option>
+            <option value="Dennis the Menace (USA).gb">Dennis the Menace (USA)</option>
+            <option value="Desert Strike - Return to the Gulf (USA) (SGB Enhanced).gb">Desert Strike - Return to the Gulf (USA) (SGB Enhanced)</option>
+            <option value="Dexterity (USA, Europe).gb">Dexterity (USA, Europe)</option>
+            <option value="Dick Tracy (USA).gb">Dick Tracy (USA)</option>
+            <option value="Dig Dug (USA).gb">Dig Dug (USA)</option>
+            <option value="Donkey Kong (Japan, USA) (SGB Enhanced).gb">Donkey Kong (Japan, USA) (SGB Enhanced)</option>
+            <option value="Donkey Kong Land 2 (USA, Europe) (SGB Enhanced).gb">Donkey Kong Land 2 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Donkey Kong Land III (USA, Europe) (SGB Enhanced).gb">Donkey Kong Land III (USA, Europe) (SGB Enhanced)</option>
+            <option value="Donkey Kong Land (USA, Europe) (SGB Enhanced).gb">Donkey Kong Land (USA, Europe) (SGB Enhanced)</option>
+            <option value="Double Dragon 3 - The Arcade Game (USA, Europe).gb">Double Dragon 3 - The Arcade Game (USA, Europe)</option>
+            <option value="Double Dragon II (USA, Europe).gb">Double Dragon II (USA, Europe)</option>
+            <option value="Double Dragon (USA, Europe).gb">Double Dragon (USA, Europe)</option>
+            <option value="Double Dribble - 5 on 5 (USA).gb">Double Dribble - 5 on 5 (USA)</option>
+            <option value="DragonHeart (USA, Europe).gb">DragonHeart (USA, Europe)</option>
+            <option value="Dragon's Lair - The Legend (USA).gb">Dragon's Lair - The Legend (USA)</option>
+            <option value="Dr. Franken II (USA, Europe) (En,Fr,De,Es,It,Nl,Sv).gb">Dr. Franken II (USA, Europe) (En,Fr,De,Es,It,Nl,Sv)</option>
+            <option value="Dr. Franken (USA).gb">Dr. Franken (USA)</option>
+            <option value="Dr. Mario.gb">Dr. Mario</option>
+            <option value="Dr. Mario (World).gb">Dr. Mario (World)</option>
+            <option value="DuckTales 2 (USA).gb">DuckTales 2 (USA)</option>
+            <option value="Duck Tales.gb">Duck Tales</option>
+            <option value="DuckTales (USA).gb">DuckTales (USA)</option>
+            <option value="Earthworm Jim (USA).gb">Earthworm Jim (USA)</option>
+            <option value="Elevator Action (USA, Europe).gb">Elevator Action (USA, Europe)</option>
+            <option value="Elite Soccer (USA) (SGB Enhanced).gb">Elite Soccer (USA) (SGB Enhanced)</option>
+            <option value="Extra Bases! (USA).gb">Extra Bases! (USA)</option>
+            <option value="F-15 Strike Eagle (USA, Europe).gb">F-15 Strike Eagle (USA, Europe)</option>
+            <option value="F1 Pole Position (USA, Europe).gb">F1 Pole Position (USA, Europe)</option>
+            <option value="F-1 Race (World).gb">F-1 Race (World)</option>
+            <option value="Faceball 2000 (USA).gb">Faceball 2000 (USA)</option>
+            <option value="Fastest Lap (Japan, USA).gb">Fastest Lap (Japan, USA)</option>
+            <option value="Felix the Cat (USA, Europe).gb">Felix the Cat (USA, Europe)</option>
+            <option value="Ferrari Grand Prix Challenge (USA, Europe).gb">Ferrari Grand Prix Challenge (USA, Europe)</option>
+            <option value="Fidgetts, The (USA, Europe) (En,Fr,De,Es,It,Nl,Sv).gb">Fidgetts, The (USA, Europe) (En,Fr,De,Es,It,Nl,Sv)</option>
+            <option value="FIFA International Soccer (USA, Europe) (En,Fr,De,Es) (SGB Enhanced).gb">FIFA International Soccer (USA, Europe) (En,Fr,De,Es) (SGB Enhanced)</option>
+            <option value="FIFA Soccer '96 (USA, Europe) (En,Fr,De,Es) (SGB Enhanced).gb">FIFA Soccer '96 (USA, Europe) (En,Fr,De,Es) (SGB Enhanced)</option>
+            <option value="FIFA Soccer '97 (USA, Europe) (SGB Enhanced).gb">FIFA Soccer '97 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Fighting Simulator 2 in 1 (USA, Europe).gb">Fighting Simulator 2 in 1 (USA, Europe)</option>
+            <option value="Final Fantasy Adventure (USA).gb">Final Fantasy Adventure (USA)</option>
+            <option value="Final Fantasy Legend III (USA).gb">Final Fantasy Legend III (USA)</option>
+            <option value="Final Fantasy Legend II (USA).gb">Final Fantasy Legend II (USA)</option>
+            <option value="Final Fantasy Legend, The (USA).gb">Final Fantasy Legend, The (USA)</option>
+            <option value="Fish Dude (USA).gb">Fish Dude (USA)</option>
+            <option value="Fist of the North Star (USA).gb">Fist of the North Star (USA)</option>
+            <option value="Flash, The (USA, Europe).gb">Flash, The (USA, Europe)</option>
+            <option value="Flintstones, The - King Rock Treasure Island (USA, Europe).gb">Flintstones, The - King Rock Treasure Island (USA, Europe)</option>
+            <option value="Flintstones, The (USA, Europe).gb">Flintstones, The (USA, Europe)</option>
+            <option value="Flipull (USA).gb">Flipull (USA)</option>
+            <option value="Foreman for Real (USA, Europe).gb">Foreman for Real (USA, Europe)</option>
+            <option value="Fortified Zone (USA, Europe).gb">Fortified Zone (USA, Europe)</option>
+            <option value="Frank Thomas Big Hurt Baseball (USA, Europe).gb">Frank Thomas Big Hurt Baseball (USA, Europe)</option>
+            <option value="Frogger (USA).gb">Frogger (USA)</option>
+            <option value="Game of Harmony, The (USA).gb">Game of Harmony, The (USA)</option>
+            <option value="Game &amp; Watch Gallery (USA) (SGB Enhanced).gb">Game &amp; Watch Gallery (USA) (SGB Enhanced)</option>
+            <option value="Gargoyle's Quest.gb">Gargoyle's Quest</option>
+            <option value="Gargoyle's Quest (USA, Europe).gb">Gargoyle's Quest (USA, Europe)</option>
+            <option value="Gauntlet II (USA, Europe).gb">Gauntlet II (USA, Europe)</option>
+            <option value="Gear Works (USA, Europe).gb">Gear Works (USA, Europe)</option>
+            <option value="George Foreman's KO Boxing (USA, Europe).gb">George Foreman's KO Boxing (USA, Europe)</option>
+            <option value="Getaway, The (USA).gb">Getaway, The (USA)</option>
+            <option value="Ghostbusters II (USA, Europe).gb">Ghostbusters II (USA, Europe)</option>
+            <option value="Goal! (USA).gb">Goal! (USA)</option>
+            <option value="Godzilla (USA, Europe).gb">Godzilla (USA, Europe)</option>
+            <option value="Go! Go! Tank (USA).gb">Go! Go! Tank (USA)</option>
+            <option value="Golf.gb">Golf</option>
+            <option value="Golf (World).gb">Golf (World)</option>
+            <option value="Gradius - The Interstellar Assault (USA).gb">Gradius - The Interstellar Assault (USA)</option>
+            <option value="Great Greed (USA).gb">Great Greed (USA)</option>
+            <option value="Gremlins 2 - The New Batch (World).gb">Gremlins 2 - The New Batch (World)</option>
+            <option value="HAL Wrestling (USA).gb">HAL Wrestling (USA)</option>
+            <option value="Harvest Moon GB (USA) (SGB Enhanced).gb">Harvest Moon GB (USA) (SGB Enhanced)</option>
+            <option value="Hatris (Japan, USA).gb">Hatris (Japan, USA)</option>
+            <option value="Heavyweight Championship Boxing (USA).gb">Heavyweight Championship Boxing (USA)</option>
+            <option value="Heiankyo Alien (USA).gb">Heiankyo Alien (USA)</option>
+            <option value="Hercules (USA, Europe) (SGB Enhanced).gb">Hercules (USA, Europe) (SGB Enhanced)</option>
+            <option value="High Stakes (USA).gb">High Stakes (USA)</option>
+            <option value="Hit the Ice - VHL - The Official Video Hockey League (USA, Europe).gb">Hit the Ice - VHL - The Official Video Hockey League (USA, Europe)</option>
+            <option value="Home Alone 2 - Lost In New York (USA, Europe).gb">Home Alone 2 - Lost In New York (USA, Europe)</option>
+            <option value="Home Alone (USA, Europe).gb">Home Alone (USA, Europe)</option>
+            <option value="Hook (USA).gb">Hook (USA)</option>
+            <option value="Hudson Hawk (USA).gb">Hudson Hawk (USA)</option>
+            <option value="Humans, The (USA).gb">Humans, The (USA)</option>
+            <option value="Hunchback of Notre Dame, The - 5 Foolishly Fun Topsy Turvy Games (USA, Europe) (SGB Enhanced).gb">Hunchback of Notre Dame, The - 5 Foolishly Fun Topsy Turvy Games (USA, Europe) (SGB Enhanced)</option>
+            <option value="Hunt for Red October, The (USA, Europe).gb">Hunt for Red October, The (USA, Europe)</option>
+            <option value="Hyper Lode Runner.gb">Hyper Lode Runner</option>
+            <option value="Hyper Lode Runner (World) (Rev A).gb">Hyper Lode Runner (World) (Rev A)</option>
+            <option value="Incredible Crash Dummies, The (USA, Europe).gb">Incredible Crash Dummies, The (USA, Europe)</option>
+            <option value="Indiana Jones and the Last Crusade (USA, Europe).gb">Indiana Jones and the Last Crusade (USA, Europe)</option>
+            <option value="International Superstar Soccer (USA, Europe) (SGB Enhanced).gb">International Superstar Soccer (USA, Europe) (SGB Enhanced)</option>
+            <option value="In Your Face (USA).gb">In Your Face (USA)</option>
+            <option value="Iron Man X-O Manowar in Heavy Metal (USA, Europe) (SGB Enhanced).gb">Iron Man X-O Manowar in Heavy Metal (USA, Europe) (SGB Enhanced)</option>
+            <option value="Ishido - The Way of Stones (USA).gb">Ishido - The Way of Stones (USA)</option>
+            <option value="Jack Nicklaus Golf (USA, Europe).gb">Jack Nicklaus Golf (USA, Europe)</option>
+            <option value="James Bond 007 (USA, Europe) (SGB Enhanced).gb">James Bond 007 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Jeep Jamboree (USA).gb">Jeep Jamboree (USA)</option>
+            <option value="Jeopardy! - Platinum Edition (USA) (SGB Enhanced).gb">Jeopardy! - Platinum Edition (USA) (SGB Enhanced)</option>
+            <option value="Jeopardy! - Sports Edition (USA).gb">Jeopardy! - Sports Edition (USA)</option>
+            <option value="Jeopardy! - Teen Tournament (USA) (SGB Enhanced).gb">Jeopardy! - Teen Tournament (USA) (SGB Enhanced)</option>
+            <option value="Jeopardy! (USA).gb">Jeopardy! (USA)</option>
+            <option value="Jetsons, The - Robot Panic (USA, Europe).gb">Jetsons, The - Robot Panic (USA, Europe)</option>
+            <option value="Jimmy Connors Tennis (USA, Europe).gb">Jimmy Connors Tennis (USA, Europe)</option>
+            <option value="Joe &amp; Mac (USA).gb">Joe &amp; Mac (USA)</option>
+            <option value="Jordan vs Bird - One on One (USA, Europe).gb">Jordan vs Bird - One on One (USA, Europe)</option>
+            <option value="Judge Dredd (USA, Europe).gb">Judge Dredd (USA, Europe)</option>
+            <option value="Jungle Book, The (USA, Europe).gb">Jungle Book, The (USA, Europe)</option>
+            <option value="Jungle Strike (USA, Europe).gb">Jungle Strike (USA, Europe)</option>
+            <option value="Jurassic Park Part 2 - The Chaos Continues (USA, Europe) (En,Fr,De,It).gb">Jurassic Park Part 2 - The Chaos Continues (USA, Europe) (En,Fr,De,It)</option>
+            <option value="Jurassic Park (USA).gb">Jurassic Park (USA)</option>
+            <option value="Ken Griffey Jr. Presents Major League Baseball (USA, Europe) (SGB Enhanced).gb">Ken Griffey Jr. Presents Major League Baseball (USA, Europe) (SGB Enhanced)</option>
+            <option value="Kid Dracula (USA, Europe).gb">Kid Dracula (USA, Europe)</option>
+            <option value="Kid Icarus - Of Myths and Monsters (USA, Europe).gb">Kid Icarus - Of Myths and Monsters (USA, Europe)</option>
+            <option value="Killer Instinct (USA, Europe) (SGB Enhanced).gb">Killer Instinct (USA, Europe) (SGB Enhanced)</option>
+            <option value="Kingdom Crusade (USA).gb">Kingdom Crusade (USA)</option>
+            <option value="King of Fighters '95, The (USA) (SGB Enhanced).gb">King of Fighters '95, The (USA) (SGB Enhanced)</option>
+            <option value="Kirby's Block Ball (USA, Europe) (SGB Enhanced).gb">Kirby's Block Ball (USA, Europe) (SGB Enhanced)</option>
+            <option value="Kirby's Dream Land 2 (USA, Europe) (SGB Enhanced).gb">Kirby's Dream Land 2 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Kirby's Dream Land.gb">Kirby's Dream Land</option>
+            <option value="Kirby's Dream Land (USA, Europe).gb">Kirby's Dream Land (USA, Europe)</option>
+            <option value="Kirby's Pinball Land (USA, Europe).gb">Kirby's Pinball Land (USA, Europe)</option>
+            <option value="Kirby's Star Stacker (USA, Europe) (SGB Enhanced).gb">Kirby's Star Stacker (USA, Europe) (SGB Enhanced)</option>
+            <option value="Klax (USA).gb">Klax (USA)</option>
+            <option value="Knight Quest (USA).gb">Knight Quest (USA)</option>
+            <option value="Krusty's Fun House (USA, Europe).gb">Krusty's Fun House (USA, Europe)</option>
+            <option value="Kung-Fu Master (USA, Europe).gb">Kung-Fu Master (USA, Europe)</option>
+            <option value="Kwirk - He's A-maze-ing! (USA, Europe).gb">Kwirk - He's A-maze-ing! (USA, Europe)</option>
+            <option value="Lamborghini American Challenge (USA, Europe).gb">Lamborghini American Challenge (USA, Europe)</option>
+            <option value="Last Action Hero (USA, Europe).gb">Last Action Hero (USA, Europe)</option>
+            <option value="Lazlos' Leap (USA).gb">Lazlos' Leap (USA)</option>
+            <option value="Legend of the River King GB (USA) (SGB Enhanced).gb">Legend of the River King GB (USA) (SGB Enhanced)</option>
+            <option value="Legend of Zelda, The - Link's Awakening (USA, Europe).gb">Legend of Zelda, The - Link's Awakening (USA, Europe)</option>
+            <option value="Lemmings (USA).gb">Lemmings (USA)</option>
+            <option value="Lethal Weapon (USA, Europe).gb">Lethal Weapon (USA, Europe)</option>
+            <option value="Lion King, The (USA).gb">Lion King, The (USA)</option>
+            <option value="Little Mermaid, The (USA).gb">Little Mermaid, The (USA)</option>
+            <option value="Lock n' Chase ~ Lock 'n' Chase (World).gb">Lock n' Chase ~ Lock 'n' Chase (World)</option>
+            <option value="Looney Tunes (USA, Europe).gb">Looney Tunes (USA, Europe)</option>
+            <option value="Loopz (World).gb">Loopz (World)</option>
+            <option value="Lost World, The - Jurassic Park (USA, Europe) (SGB Enhanced).gb">Lost World, The - Jurassic Park (USA, Europe) (SGB Enhanced)</option>
+            <option value="Madden '95 (USA, Europe) (SGB Enhanced).gb">Madden '95 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Madden '96 (USA, Europe) (SGB Enhanced).gb">Madden '96 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Madden '97 (USA) (SGB Enhanced).gb">Madden '97 (USA) (SGB Enhanced)</option>
+            <option value="Malibu Beach Volleyball (USA).gb">Malibu Beach Volleyball (USA)</option>
+            <option value="Marble Madness.gb">Marble Madness</option>
+            <option value="Marble Madness (USA, Europe).gb">Marble Madness (USA, Europe)</option>
+            <option value="Mario's Picross (USA, Europe) (SGB Enhanced).gb">Mario's Picross (USA, Europe) (SGB Enhanced)</option>
+            <option value="Maru's Mission (USA).gb">Maru's Mission (USA)</option>
+            <option value="Maui Mallard (USA).gb">Maui Mallard (USA)</option>
+            <option value="Megalit (USA, Europe).gb">Megalit (USA, Europe)</option>
+            <option value="Mega Man - Dr. Wily's Revenge (USA).gb">Mega Man - Dr. Wily's Revenge (USA)</option>
+            <option value="Mega Man.gb">Mega Man</option>
+            <option value="Mega Man III (USA).gb">Mega Man III (USA)</option>
+            <option value="Mega Man II (USA).gb">Mega Man II (USA)</option>
+            <option value="Mega Man IV (USA).gb">Mega Man IV (USA)</option>
+            <option value="Mega Man V (USA) (SGB Enhanced).gb">Mega Man V (USA) (SGB Enhanced)</option>
+            <option value="Mercenary Force (USA, Europe).gb">Mercenary Force (USA, Europe)</option>
+            <option value="Metal Masters (USA).gb">Metal Masters (USA)</option>
+            <option value="Metroid II - Return of Samus (World).gb">Metroid II - Return of Samus (World)</option>
+            <option value="Mickey Mouse - Magic Wands (USA, Europe) (SGB Enhanced).gb">Mickey Mouse - Magic Wands (USA, Europe) (SGB Enhanced)</option>
+            <option value="Mickey's Dangerous Chase (USA).gb">Mickey's Dangerous Chase (USA)</option>
+            <option value="Mickey's Ultimate Challenge (USA, Europe).gb">Mickey's Ultimate Challenge (USA, Europe)</option>
+            <option value="Micro Machines (USA, Europe).gb">Micro Machines (USA, Europe)</option>
+            <option value="Mighty Morphin Power Rangers - The Movie (USA, Europe) (SGB Enhanced).gb">Mighty Morphin Power Rangers - The Movie (USA, Europe) (SGB Enhanced)</option>
+            <option value="Mighty Morphin Power Rangers (USA, Europe) (SGB Enhanced).gb">Mighty Morphin Power Rangers (USA, Europe) (SGB Enhanced)</option>
+            <option value="Milon's Secret Castle (USA, Europe).gb">Milon's Secret Castle (USA, Europe)</option>
+            <option value="Miner 2049er Starring Bounty Bob (USA).gb">Miner 2049er Starring Bounty Bob (USA)</option>
+            <option value="misc/dmg-acid2.gb">misc/dmg-acid2</option>
+            <option value="misc/merken.gb">misc/merken</option>
+            <option value="Missile Command (USA, Europe).gb">Missile Command (USA, Europe)</option>
+            <option value="Mole Mania (USA, Europe) (SGB Enhanced).gb">Mole Mania (USA, Europe) (SGB Enhanced)</option>
+            <option value="Monopoly (USA).gb">Monopoly (USA)</option>
+            <option value="Monster Truck Wars (USA, Europe).gb">Monster Truck Wars (USA, Europe)</option>
+            <option value="mooneye/div_write.gb">mooneye/div_write</option>
+            <option value="mooneye/rapid_toggle.gb">mooneye/rapid_toggle</option>
+            <option value="mooneye/tim00_div_trigger.gb">mooneye/tim00_div_trigger</option>
+            <option value="mooneye/tim00.gb">mooneye/tim00</option>
+            <option value="mooneye/tim01_div_trigger.gb">mooneye/tim01_div_trigger</option>
+            <option value="mooneye/tim01.gb">mooneye/tim01</option>
+            <option value="mooneye/tim10_div_trigger.gb">mooneye/tim10_div_trigger</option>
+            <option value="mooneye/tim10.gb">mooneye/tim10</option>
+            <option value="mooneye/tim11_div_trigger.gb">mooneye/tim11_div_trigger</option>
+            <option value="mooneye/tim11.gb">mooneye/tim11</option>
+            <option value="mooneye/tima_reload.gb">mooneye/tima_reload</option>
+            <option value="mooneye/tima_write_reloading.gb">mooneye/tima_write_reloading</option>
+            <option value="mooneye/tma_write_reloading.gb">mooneye/tma_write_reloading</option>
+            <option value="Mortal Kombat 3 (USA).gb">Mortal Kombat 3 (USA)</option>
+            <option value="Mortal Kombat II (USA, Europe).gb">Mortal Kombat II (USA, Europe)</option>
+            <option value="Mortal Kombat &amp; Mortal Kombat II (USA, Europe).gb">Mortal Kombat &amp; Mortal Kombat II (USA, Europe)</option>
+            <option value="Mortal Kombat (USA, Europe).gb">Mortal Kombat (USA, Europe)</option>
+            <option value="Motocross Maniacs (USA).gb">Motocross Maniacs (USA)</option>
+            <option value="Mouse Trap Hotel (USA).gb">Mouse Trap Hotel (USA)</option>
+            <option value="Mr. Chin's Gourmet Paradise (USA).gb">Mr. Chin's Gourmet Paradise (USA)</option>
+            <option value="Mr. Do! (USA).gb">Mr. Do! (USA)</option>
+            <option value="Ms. Pac-Man (USA).gb">Ms. Pac-Man (USA)</option>
+            <option value="Muhammad Ali Heavyweight Boxing (USA, Europe).gb">Muhammad Ali Heavyweight Boxing (USA, Europe)</option>
+            <option value="Mulan (USA, Europe) (SGB Enhanced).gb">Mulan (USA, Europe) (SGB Enhanced)</option>
+            <option value="Mysterium (USA).gb">Mysterium (USA)</option>
+            <option value="Mystical Ninja Starring Goemon (USA) (SGB Enhanced).gb">Mystical Ninja Starring Goemon (USA) (SGB Enhanced)</option>
+            <option value="Nail'n Scale (USA, Europe).gb">Nail'n Scale (USA, Europe)</option>
+            <option value="Navy Seals (USA, Europe).gb">Navy Seals (USA, Europe)</option>
+            <option value="NBA All Star Challenge 2 (USA, Europe).gb">NBA All Star Challenge 2 (USA, Europe)</option>
+            <option value="NBA All Star Challenge (USA, Europe).gb">NBA All Star Challenge (USA, Europe)</option>
+            <option value="NBA Jam - Tournament Edition (USA, Europe).gb">NBA Jam - Tournament Edition (USA, Europe)</option>
+            <option value="NBA Jam (USA, Europe).gb">NBA Jam (USA, Europe)</option>
+            <option value="NBA Live 96 (USA, Europe) (SGB Enhanced).gb">NBA Live 96 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Nemesis (USA).gb">Nemesis (USA)</option>
+            <option value="New Chessmaster, The (USA, Europe).gb">New Chessmaster, The (USA, Europe)</option>
+            <option value="NFL Football (USA).gb">NFL Football (USA)</option>
+            <option value="NFL Quarterback Club '96 (USA, Europe).gb">NFL Quarterback Club '96 (USA, Europe)</option>
+            <option value="NFL Quarterback Club II (USA, Europe).gb">NFL Quarterback Club II (USA, Europe)</option>
+            <option value="NFL Quarterback Club (USA, Europe).gb">NFL Quarterback Club (USA, Europe)</option>
+            <option value="NHL '96 (USA, Europe) (SGB Enhanced).gb">NHL '96 (USA, Europe) (SGB Enhanced)</option>
+            <option value="NHL Hockey '95 (USA, Europe) (SGB Enhanced).gb">NHL Hockey '95 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Nigel Mansell's World Championship (USA).gb">Nigel Mansell's World Championship (USA)</option>
+            <option value="Ninja Boy 2 (USA, Europe).gb">Ninja Boy 2 (USA, Europe)</option>
+            <option value="Ninja Boy (USA, Europe).gb">Ninja Boy (USA, Europe)</option>
+            <option value="Ninja Gaiden Shadow (USA).gb">Ninja Gaiden Shadow (USA)</option>
+            <option value="Ninja Taro (USA).gb">Ninja Taro (USA)</option>
+            <option value="Nintendo World Cup (USA, Europe).gb">Nintendo World Cup (USA, Europe)</option>
+            <option value="Nobunaga's Ambition (USA).gb">Nobunaga's Ambition (USA)</option>
+            <option value="Oddworld Adventures (USA, Europe).gb">Oddworld Adventures (USA, Europe)</option>
+            <option value="Olympic Summer Games (USA, Europe) (SGB Enhanced).gb">Olympic Summer Games (USA, Europe) (SGB Enhanced)</option>
+            <option value="Operation C (USA).gb">Operation C (USA)</option>
+            <option value="Out of Gas (USA).gb">Out of Gas (USA)</option>
+            <option value="Pac-Attack (USA) (SGB Enhanced).gb">Pac-Attack (USA) (SGB Enhanced)</option>
+            <option value="Pac-In-Time (USA) (SGB Enhanced).gb">Pac-In-Time (USA) (SGB Enhanced)</option>
+            <option value="Pac-Man (USA).gb">Pac-Man (USA)</option>
+            <option value="Pagemaster, The (USA) (SGB Enhanced).gb">Pagemaster, The (USA) (SGB Enhanced)</option>
+            <option value="Panel Action Bingo (USA).gb">Panel Action Bingo (USA)</option>
+            <option value="Paperboy 2 (USA, Europe).gb">Paperboy 2 (USA, Europe)</option>
+            <option value="Paperboy (USA, Europe).gb">Paperboy (USA, Europe)</option>
+            <option value="Penguin Wars (USA).gb">Penguin Wars (USA)</option>
+            <option value="PGA European Tour (USA, Europe) (SGB Enhanced).gb">PGA European Tour (USA, Europe) (SGB Enhanced)</option>
+            <option value="PGA Tour 96 (USA, Europe) (SGB Enhanced).gb">PGA Tour 96 (USA, Europe) (SGB Enhanced)</option>
+            <option value="Pinball Dreams (USA, Europe).gb">Pinball Dreams (USA, Europe)</option>
+            <option value="Pinball Fantasies (USA, Europe).gb">Pinball Fantasies (USA, Europe)</option>
+            <option value="Pinball - Revenge of the 'Gator (USA, Europe).gb">Pinball - Revenge of the 'Gator (USA, Europe)</option>
+            <option value="Pinocchio (USA).gb">Pinocchio (USA)</option>
+            <option value="Pipe Dream (USA).gb">Pipe Dream (USA)</option>
+            <option value="Pit Fighter (USA, Europe).gb">Pit Fighter (USA, Europe)</option>
+            <option value="Play Action Football (USA).gb">Play Action Football (USA)</option>
+            <option value="Pocahontas (USA, Europe) (SGB Enhanced).gb">Pocahontas (USA, Europe) (SGB Enhanced)</option>
+            <option value="Pokemon Blue.gb">Pokemon Blue</option>
+            <option value="Pokemon - Blue Version (USA, Europe) (SGB Enhanced).gb">Pokemon - Blue Version (USA, Europe) (SGB Enhanced)</option>
+            <option value="Pokemon - Green Version.gb">Pokemon - Green Version</option>
+            <option value="Pokemon Red.gb">Pokemon Red</option>
+            <option value="Pokemon - Red Version (USA, Europe) (SGB Enhanced).gb">Pokemon - Red Version (USA, Europe) (SGB Enhanced)</option>
+            <option value="Pokemon - Silver Version.gb">Pokemon - Silver Version</option>
+            <option value="Pokemon TCG.gbc">Pokemon TCG</option>
+            <option value="Pokemon - Yellow Version - Special Pikachu Edition (USA, Europe) (GBC,SGB Enhanced).gb">Pokemon - Yellow Version - Special Pikachu Edition (USA, Europe) (GBC,SGB Enhanced)</option>
+            <option value="Popeye 2 (USA).gb">Popeye 2 (USA)</option>
+            <option value="Power Mission (USA).gb">Power Mission (USA)</option>
+            <option value="Power Racer (USA).gb">Power Racer (USA)</option>
+            <option value="Prehistorik Man (USA, Europe).gb">Prehistorik Man (USA, Europe)</option>
+            <option value="Primal Rage (USA, Europe).gb">Primal Rage (USA, Europe)</option>
+            <option value="Prince of Persia (USA).gb">Prince of Persia (USA)</option>
+            <option value="Prophecy - The Viking Child (USA).gb">Prophecy - The Viking Child (USA)</option>
+            <option value="Punisher, The - The Ultimate Payback (USA).gb">Punisher, The - The Ultimate Payback (USA)</option>
+            <option value="Pyramids of Ra (USA).gb">Pyramids of Ra (USA)</option>
+            <option value="Q-bert for Game Boy (USA, Europe).gb">Q-bert for Game Boy (USA, Europe)</option>
+            <option value="Q Billion (USA).gb">Q Billion (USA)</option>
+            <option value="QIX (World).gb">QIX (World)</option>
+            <option value="Quarth (USA, Europe).gb">Quarth (USA, Europe)</option>
+            <option value="Race Days (USA).gb">Race Days (USA)</option>
+            <option value="Race Drivin' (USA, Europe).gb">Race Drivin' (USA, Europe)</option>
+            <option value="Radar Mission (USA, Europe).gb">Radar Mission (USA, Europe)</option>
+            <option value="Raging Fighter (USA, Europe).gb">Raging Fighter (USA, Europe)</option>
+            <option value="Rampart (USA, Europe).gb">Rampart (USA, Europe)</option>
+            <option value="Real Ghostbusters, The (USA).gb">Real Ghostbusters, The (USA)</option>
+            <option value="Ren &amp; Stimpy Show, The - Space Cadet Adventures (USA).gb">Ren &amp; Stimpy Show, The - Space Cadet Adventures (USA)</option>
+            <option value="Ren &amp; Stimpy Show, The - Veediots! (USA, Europe).gb">Ren &amp; Stimpy Show, The - Veediots! (USA, Europe)</option>
+            <option value="Riddick Bowe Boxing (USA).gb">Riddick Bowe Boxing (USA)</option>
+            <option value="Ring Rage (USA).gb">Ring Rage (USA)</option>
+            <option value="Road Rash (USA, Europe).gb">Road Rash (USA, Europe)</option>
+            <option value="Robin Hood - Prince of Thieves (USA).gb">Robin Hood - Prince of Thieves (USA)</option>
+            <option value="Robocop 2.gb">Robocop 2</option>
+            <option value="RoboCop 2 (USA, Europe).gb">RoboCop 2 (USA, Europe)</option>
+            <option value="Robocop.gb">Robocop</option>
+            <option value="RoboCop (USA).gb">RoboCop (USA)</option>
+            <option value="RoboCop vs. The Terminator (USA).gb">RoboCop vs. The Terminator (USA)</option>
+            <option value="Roger Clemens' MVP Baseball (USA).gb">Roger Clemens' MVP Baseball (USA)</option>
+            <option value="Rolan's Curse II (USA).gb">Rolan's Curse II (USA)</option>
+            <option value="Rolan's Curse (USA).gb">Rolan's Curse (USA)</option>
+            <option value="R-Type (USA, Europe).gb">R-Type (USA, Europe)</option>
+            <option value="Rugrats Movie, The (USA) (SGB Enhanced).gb">Rugrats Movie, The (USA) (SGB Enhanced)</option>
+            <option value="Samurai Shodown (USA, Europe) (SGB Enhanced).gb">Samurai Shodown (USA, Europe) (SGB Enhanced)</option>
+            <option value="SeaQuest DSV (USA, Europe) (SGB Enhanced).gb">SeaQuest DSV (USA, Europe) (SGB Enhanced)</option>
+            <option value="Serpent (USA).gb">Serpent (USA)</option>
+            <option value="Shanghai (USA).gb">Shanghai (USA)</option>
+            <option value="Shaq Fu (USA) (SGB Enhanced).gb">Shaq Fu (USA) (SGB Enhanced)</option>
+            <option value="Side Pocket (World).gb">Side Pocket (World)</option>
+            <option value="Simpsons Itchy &amp; Scratchy, The - Miniature Golf Madness (USA, Europe).gb">Simpsons Itchy &amp; Scratchy, The - Miniature Golf Madness (USA, Europe)</option>
+            <option value="Simpsons, The - Bart &amp; the Beanstalk (USA, Europe).gb">Simpsons, The - Bart &amp; the Beanstalk (USA, Europe)</option>
+            <option value="Simpsons, The - Bart vs. the Juggernauts (USA, Europe).gb">Simpsons, The - Bart vs. the Juggernauts (USA, Europe)</option>
+            <option value="Skate or Die - Bad 'N Rad (USA).gb">Skate or Die - Bad 'N Rad (USA)</option>
+            <option value="Skate or Die - Tour de Thrash (USA).gb">Skate or Die - Tour de Thrash (USA)</option>
+            <option value="Small Soldiers (USA, Europe) (SGB Enhanced).gb">Small Soldiers (USA, Europe) (SGB Enhanced)</option>
+            <option value="Sneaky Snakes (USA, Europe).gb">Sneaky Snakes (USA, Europe)</option>
+            <option value="Snoopy - Magic Show (USA, Europe).gb">Snoopy - Magic Show (USA, Europe)</option>
+            <option value="Snow Bros. Jr. (USA).gb">Snow Bros. Jr. (USA)</option>
+            <option value="Soccer Mania (USA).gb">Soccer Mania (USA)</option>
+            <option value="SolarStriker (World).gb">SolarStriker (World)</option>
+            <option value="Solitaire FunPak (USA, Europe).gb">Solitaire FunPak (USA, Europe)</option>
+            <option value="Solomon's Club (USA).gb">Solomon's Club (USA)</option>
+            <option value="Space Invaders (USA) (SGB Enhanced).gb">Space Invaders (USA) (SGB Enhanced)</option>
+            <option value="Spanky's Quest (USA).gb">Spanky's Quest (USA)</option>
+            <option value="Speedball 2 - Brutal Deluxe (USA, Europe).gb">Speedball 2 - Brutal Deluxe (USA, Europe)</option>
+            <option value="Speedy Gonzales (USA, Europe).gb">Speedy Gonzales (USA, Europe)</option>
+            <option value="Spider-Man 2 (USA, Europe).gb">Spider-Man 2 (USA, Europe)</option>
+            <option value="Spider-Man 3 - Invasion of the Spider-Slayers (USA, Europe).gb">Spider-Man 3 - Invasion of the Spider-Slayers (USA, Europe)</option>
+            <option value="Spider-Man - X-Men (USA, Europe).gb">Spider-Man - X-Men (USA, Europe)</option>
+            <option value="Sports Illustrated - Football &amp; Baseball (USA).gb">Sports Illustrated - Football &amp; Baseball (USA)</option>
+            <option value="Sports Illustrated for Kids - The Ultimate Triple Dare! (USA).gb">Sports Illustrated for Kids - The Ultimate Triple Dare! (USA)</option>
+            <option value="Sports Illustrated - Golf Classic (USA) (SGB Enhanced).gb">Sports Illustrated - Golf Classic (USA) (SGB Enhanced)</option>
+            <option value="Spot - The Cool Adventure (USA).gb">Spot - The Cool Adventure (USA)</option>
+            <option value="Spot (USA).gb">Spot (USA)</option>
+            <option value="Spud's Adventure (USA).gb">Spud's Adventure (USA)</option>
+            <option value="Spy vs Spy - Operation Boobytrap (USA).gb">Spy vs Spy - Operation Boobytrap (USA)</option>
+            <option value="Square Deal - The Game of Two-Dimensional Poker (USA).gb">Square Deal - The Game of Two-Dimensional Poker (USA)</option>
+            <option value="Stargate (USA, Europe).gb">Stargate (USA, Europe)</option>
+            <option value="Star Trek - 25th Anniversary (USA, Europe).gb">Star Trek - 25th Anniversary (USA, Europe)</option>
+            <option value="Star Trek Generations - Beyond the Nexus (USA) (SGB Enhanced).gb">Star Trek Generations - Beyond the Nexus (USA) (SGB Enhanced)</option>
+            <option value="Star Trek - The Next Generation (USA, Europe).gb">Star Trek - The Next Generation (USA, Europe)</option>
+            <option value="Star Wars - The Empire Strikes Back (USA).gb">Star Wars - The Empire Strikes Back (USA)</option>
+            <option value="Star Wars (USA).gb">Star Wars (USA)</option>
+            <option value="Stop That Roach! (USA).gb">Stop That Roach! (USA)</option>
+            <option value="Street Fighter II (USA) (SGB Enhanced).gb">Street Fighter II (USA) (SGB Enhanced)</option>
+            <option value="Street Racer (USA, Europe).gb">Street Racer (USA, Europe)</option>
+            <option value="Sumo Fighter (USA).gb">Sumo Fighter (USA)</option>
+            <option value="Super Battletank - War in the Gulf (USA).gb">Super Battletank - War in the Gulf (USA)</option>
+            <option value="Super Black Bass (USA).gb">Super Black Bass (USA)</option>
+            <option value="Super Chase H.Q. (USA, Europe).gb">Super Chase H.Q. (USA, Europe)</option>
+            <option value="Super Hunchback (USA).gb">Super Hunchback (USA)</option>
+            <option value="Superman (USA, Europe) (SGB Enhanced).gb">Superman (USA, Europe) (SGB Enhanced)</option>
+            <option value="Super Mario Land 2 - 6 Golden Coins (USA, Europe).gb">Super Mario Land 2 - 6 Golden Coins (USA, Europe)</option>
+            <option value="Super Mario Land 2.gb">Super Mario Land 2</option>
+            <option value="Super Mario Land.gb">Super Mario Land</option>
+            <option value="Super Mario Land (World).gb">Super Mario Land (World)</option>
+            <option value="Super Off Road (USA, Europe).gb">Super Off Road (USA, Europe)</option>
+            <option value="Super R.C. Pro-Am (USA, Europe).gb">Super R.C. Pro-Am (USA, Europe)</option>
+            <option value="Super Scrabble (USA).gb">Super Scrabble (USA)</option>
+            <option value="Super Star Wars - Return of the Jedi (USA, Europe) (SGB Enhanced).gb">Super Star Wars - Return of the Jedi (USA, Europe) (SGB Enhanced)</option>
+            <option value="Swamp Thing (USA, Europe).gb">Swamp Thing (USA, Europe)</option>
+            <option value="Sword of Hope II, The (USA).gb">Sword of Hope II, The (USA)</option>
+            <option value="Sword of Hope, The (USA).gb">Sword of Hope, The (USA)</option>
+            <option value="T2 - The Arcade Game (USA, Europe).gb">T2 - The Arcade Game (USA, Europe)</option>
+            <option value="Tail 'Gator (USA, Europe).gb">Tail 'Gator (USA, Europe)</option>
+            <option value="TaleSpin (USA).gb">TaleSpin (USA)</option>
+            <option value="Tamagotchi (USA, Europe) (SGB Enhanced).gb">Tamagotchi (USA, Europe) (SGB Enhanced)</option>
+            <option value="Tarzan (USA, Europe).gb">Tarzan (USA, Europe)</option>
+            <option value="Tasmania Story (USA).gb">Tasmania Story (USA)</option>
+            <option value="Taz-Mania 2 (USA).gb">Taz-Mania 2 (USA)</option>
+            <option value="Taz-Mania (USA, Europe).gb">Taz-Mania (USA, Europe)</option>
+            <option value="Tecmo Bowl (USA).gb">Tecmo Bowl (USA)</option>
+            <option value="Teenage Mutant Ninja Turtles 2.gb">Teenage Mutant Ninja Turtles 2</option>
+            <option value="Teenage Mutant Ninja Turtles - Fall of the Foot Clan (USA).gb">Teenage Mutant Ninja Turtles - Fall of the Foot Clan (USA)</option>
+            <option value="Teenage Mutant Ninja Turtles.gb">Teenage Mutant Ninja Turtles</option>
+            <option value="Teenage Mutant Ninja Turtles II - Back from the Sewers (USA).gb">Teenage Mutant Ninja Turtles II - Back from the Sewers (USA)</option>
+            <option value="Teenage Mutant Ninja Turtles III - Radical Rescue (USA).gb">Teenage Mutant Ninja Turtles III - Radical Rescue (USA)</option>
+            <option value="Tennis.gb">Tennis</option>
+            <option value="Tennis (World).gb">Tennis (World)</option>
+            <option value="Terminator 2 - Judgment Day (USA, Europe).gb">Terminator 2 - Judgment Day (USA, Europe)</option>
+            <option value="Tesserae (USA).gb">Tesserae (USA)</option>
+            <option value="Tetris 2 (USA).gb">Tetris 2 (USA)</option>
+            <option value="Tetris Attack (USA) (SGB Enhanced).gb">Tetris Attack (USA) (SGB Enhanced)</option>
+            <option value="Tetris Blast (USA, Europe) (SGB Enhanced).gb">Tetris Blast (USA, Europe) (SGB Enhanced)</option>
+            <option value="Tetris.gb" selected>Tetris</option>
+            <option value="Tetris Plus (USA, Europe) (SGB Enhanced).gb">Tetris Plus (USA, Europe) (SGB Enhanced)</option>
+            <option value="Tetris (World) (Rev A).gb">Tetris (World) (Rev A)</option>
+            <option value="The Legend of Zelda - Link's Awakening.gb">The Legend of Zelda - Link's Awakening</option>
+            <option value="The Simpsons.gb">The Simpsons</option>
+            <option value="Tiny Toon Adventures 2 - Montana's Movie Madness (USA, Europe).gb">Tiny Toon Adventures 2 - Montana's Movie Madness (USA, Europe)</option>
+            <option value="Tiny Toon Adventures - Babs' Big Break (USA, Europe).gb">Tiny Toon Adventures - Babs' Big Break (USA, Europe)</option>
+            <option value="Tiny Toon Adventures - Wacky Sports (USA).gb">Tiny Toon Adventures - Wacky Sports (USA)</option>
+            <option value="Titus the Fox to Marrakech and Back (USA, Europe).gb">Titus the Fox to Marrakech and Back (USA, Europe)</option>
+            <option value="Tom and Jerry - Frantic Antics! (USA, Europe).gb">Tom and Jerry - Frantic Antics! (USA, Europe)</option>
+            <option value="Tom &amp; Jerry (USA, Europe).gb">Tom &amp; Jerry (USA, Europe)</option>
+            <option value="Top Gun - Guts &amp; Glory (USA, Europe).gb">Top Gun - Guts &amp; Glory (USA, Europe)</option>
+            <option value="Top Rank Tennis (USA).gb">Top Rank Tennis (USA)</option>
+            <option value="Torpedo Range (USA).gb">Torpedo Range (USA)</option>
+            <option value="Total Carnage (USA, Europe).gb">Total Carnage (USA, Europe)</option>
+            <option value="Toxic Crusaders (USA).gb">Toxic Crusaders (USA)</option>
+            <option value="Toy Story (USA) (SGB Enhanced).gb">Toy Story (USA) (SGB Enhanced)</option>
+            <option value="Track &amp; Field (USA, Europe).gb">Track &amp; Field (USA, Europe)</option>
+            <option value="Track Meet (USA, Europe).gb">Track Meet (USA, Europe)</option>
+            <option value="Trax (USA, Europe).gb">Trax (USA, Europe)</option>
+            <option value="True Lies (USA, Europe).gb">True Lies (USA, Europe)</option>
+            <option value="Tumble Pop (USA, Europe).gb">Tumble Pop (USA, Europe)</option>
+            <option value="Turn and Burn (USA).gb">Turn and Burn (USA)</option>
+            <option value="Turok - Battle of the Bionosaurs (USA, Europe) (En,Fr,De,Es).gb">Turok - Battle of the Bionosaurs (USA, Europe) (En,Fr,De,Es)</option>
+            <option value="Turrican (USA, Europe).gb">Turrican (USA, Europe)</option>
+            <option value="Ultima - Runes of Virtue II (USA).gb">Ultima - Runes of Virtue II (USA)</option>
+            <option value="Ultima - Runes of Virtue (USA).gb">Ultima - Runes of Virtue (USA)</option>
+            <option value="Ultra Golf (USA).gb">Ultra Golf (USA)</option>
+            <option value="Universal Soldier (USA, Europe).gb">Universal Soldier (USA, Europe)</option>
+            <option value="Urban Strike (USA, Europe) (SGB Enhanced).gb">Urban Strike (USA, Europe) (SGB Enhanced)</option>
+            <option value="Vegas Stakes (USA, Europe) (SGB Enhanced).gb">Vegas Stakes (USA, Europe) (SGB Enhanced)</option>
+            <option value="Wario Blast featuring Bomberman! (USA, Europe) (SGB Enhanced).gb">Wario Blast featuring Bomberman! (USA, Europe) (SGB Enhanced)</option>
+            <option value="Wario Land II (USA, Europe) (SGB Enhanced).gb">Wario Land II (USA, Europe) (SGB Enhanced)</option>
+            <option value="Wario Land - Super Mario Land 3 (World).gb">Wario Land - Super Mario Land 3 (World)</option>
+            <option value="Wave Race (USA, Europe).gb">Wave Race (USA, Europe)</option>
+            <option value="Wayne's World (USA).gb">Wayne's World (USA)</option>
+            <option value="WCW Main Event (USA, Europe).gb">WCW Main Event (USA, Europe)</option>
+            <option value="We're Back! - A Dinosaur's Story (USA, Europe).gb">We're Back! - A Dinosaur's Story (USA, Europe)</option>
+            <option value="Wheel of Fortune (USA).gb">Wheel of Fortune (USA)</option>
+            <option value="Who Framed Roger Rabbit (USA).gb">Who Framed Roger Rabbit (USA)</option>
+            <option value="Wild Snake (USA) (SGB Enhanced).gb">Wild Snake (USA) (SGB Enhanced)</option>
+            <option value="Wizards &amp; Warriors Chapter X - The Fortress of Fear (USA, Europe).gb">Wizards &amp; Warriors Chapter X - The Fortress of Fear (USA, Europe)</option>
+            <option value="Wordtris (USA).gb">Wordtris (USA)</option>
+            <option value="WordZap (USA).gb">WordZap (USA)</option>
+            <option value="World Bowling (USA).gb">World Bowling (USA)</option>
+            <option value="World Circuit Series (USA).gb">World Circuit Series (USA)</option>
+            <option value="World Cup 98 (USA, Europe) (SGB Enhanced).gb">World Cup 98 (USA, Europe) (SGB Enhanced)</option>
+            <option value="World Cup USA '94 (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv).gb">World Cup USA '94 (Europe) (En,Fr,De,Es,It,Nl,Pt,Sv)</option>
+            <option value="World Cup USA '94 (Japan) (En,Fr,De,Es,It,Nl,Pt,Sv).gb">World Cup USA '94 (Japan) (En,Fr,De,Es,It,Nl,Pt,Sv)</option>
+            <option value="World Heroes 2 Jet (USA, Europe) (SGB Enhanced).gb">World Heroes 2 Jet (USA, Europe) (SGB Enhanced)</option>
+            <option value="WWF King of the Ring (USA, Europe).gb">WWF King of the Ring (USA, Europe)</option>
+            <option value="WWF Raw (USA, Europe).gb">WWF Raw (USA, Europe)</option>
+            <option value="WWF Superstars 2 (USA, Europe).gb">WWF Superstars 2 (USA, Europe)</option>
+            <option value="WWF Superstars (USA, Europe).gb">WWF Superstars (USA, Europe)</option>
+            <option value="WWF War Zone (USA, Europe).gb">WWF War Zone (USA, Europe)</option>
+            <option value="Xenon 2 - Megablast (USA, Europe).gb">Xenon 2 - Megablast (USA, Europe)</option>
+            <option value="XVII Olympic Winter Games, The - Lillehammer 1994 (USA).gb">XVII Olympic Winter Games, The - Lillehammer 1994 (USA)</option>
+            <option value="Yogi Bear in Yogi Bear's Goldrush (USA).gb">Yogi Bear in Yogi Bear's Goldrush (USA)</option>
+            <option value="Yoshi's Cookie (USA, Europe).gb">Yoshi's Cookie (USA, Europe)</option>
+            <option value="Yoshi (USA).gb">Yoshi (USA)</option>
+            <option value="Zen - Intergalactic Ninja (USA).gb">Zen - Intergalactic Ninja (USA)</option>
+            <option value="Zool - Ninja of the 'Nth' Dimension (USA).gb">Zool - Ninja of the 'Nth' Dimension (USA)</option>
+            <option value="Zoop (USA, Europe).gb">Zoop (USA, Europe)</option>
+          </optgroup>
+        </select>
+        <input id="skip-boot" type="checkbox" name="skip-boot" checked>
+        <label for="skip-boot">Skip boot</label>
+        <input id="sound-toggle" type="checkbox" name="sound-toggle" checked>
+        <label for="sound-toggle">Som</label>
+        <label for="quality-select">Qualidade</label>
+        <select id="quality-select" name="quality-select">
+          <option value="1">Normal</option>
+          <option value="2" selected>Nitido 2x</option>
+          <option value="3">Nitido 3x</option>
+        </select>
+      </div>
+      <div id="buttons">
+        <button id="start-button">Start</button>
+        <button id="frame-button">Frame</button>
+        <button id="step-button">Step</button>
+        <button id="reset-button">Reset</button>
+        <button id="fullscreen-button">Ecrã Completo</button>
+        <button id="refresh-button">Refresh</button>
+        <button id="savestate-button">Save State</button>
+        <button id="loadstate-button">Load State</button>
+      </div>
+      <div id="debug">
+        <input id="update-each-frame" type="checkbox" name="update-each-frame">
+        <label for="update-each-frame">Update each frame</label>
+        <div id="cpu-info"><span id="cpu-clock">clk: 0</span>
+          <table id="registers-table">
+            <tr>
+              <th>AF</th>
+              <th>BC</th>
+              <th>DE</th>
+              <th>HL</th>
+              <th>SP</th>
+              <th>PC</th>
+              <th>ZNHC</th>
+            </tr>
+            <tr id="registers-row">
+              <td>0000</td>
+              <td>0000</td>
+              <td>0000</td>
+              <td>0000</td>
+              <td>0000</td>
+              <td>0000</td>
+              <td>0000</td>
+            </tr>
+          </table>
+        </div>
+        <div id="previous-asm"></div>
+        <div id="asm"></div>
+        <canvas id="tiles"></canvas>
+        <canvas id="background0"></canvas>
+        <canvas id="background1"></canvas>
+        <div>
+          <input id="address" type="text" value="0000">
+          <button id="address-up-button">↑</button>
+          <button id="address-down-button">↓</button>
+          <button onclick="gb.setViewAddress(0x0000);">Bank 0</button>
+          <button onclick="gb.setViewAddress(0x4000);">Bank 1</button>
+          <button onclick="gb.setViewAddress(0x8000);">VRAM</button>
+          <button onclick="gb.setViewAddress(0xA000);">ExtRAM</button>
+          <button onclick="gb.setViewAddress(0xC000);">WRAM 0</button>
+          <button onclick="gb.setViewAddress(0xD000);">WRAM 1</button>
+          <button onclick="gb.setViewAddress(0xFE00);">OAM</button>
+          <button onclick="gb.setViewAddress(0xFF80);">HRAM</button>
+          <table id="memory">
+            <thead>
+              <tr>
+                <td></td>
+                <td>0</td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+                <td>8</td>
+                <td>9</td>
+                <td>A</td>
+                <td>B</td>
+                <td>C</td>
+                <td>D</td>
+                <td>E</td>
+                <td>F</td>
+              </tr>
+            </thead>
+            <tbody id="memory-tbody"></tbody>
+          </table>
+        </div>
+        <div id="serial-output"></div>
+      </div>
+    </div>
+    <script src="localforage.min.js"></script>
+    <script src="index.js" type="module"></script>
+  </body>
+</html>
