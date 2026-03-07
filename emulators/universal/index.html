@@ -120,6 +120,101 @@
             font-size: 0.9rem;
         }
 
+        .rom-library {
+            margin: 14px 0 18px;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(133, 174, 235, 0.5);
+            background: rgba(11, 20, 37, 0.7);
+        }
+
+        .rom-library h2 {
+            margin-bottom: 8px;
+            font-size: 1rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #c5dbff;
+        }
+
+        .rom-status {
+            color: #d6e4ff;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .rom-search {
+            width: 100%;
+            margin-bottom: 10px;
+            border: 1px solid #5475ad;
+            border-radius: 8px;
+            background: #0e1a30;
+            color: #e6efff;
+            padding: 10px 12px;
+            outline: none;
+        }
+
+        .rom-search:focus {
+            border-color: #8eb4ff;
+            box-shadow: 0 0 0 2px rgba(142, 180, 255, 0.25);
+        }
+
+        .rom-tools {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) auto auto;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .rom-select,
+        .rom-clear {
+            border: 1px solid #5475ad;
+            border-radius: 8px;
+            background: #0e1a30;
+            color: #e6efff;
+            padding: 10px 12px;
+            min-height: 42px;
+        }
+
+        .rom-select {
+            min-width: 140px;
+        }
+
+        .rom-clear {
+            cursor: pointer;
+            background: #183053;
+        }
+
+        .rom-clear:hover {
+            background: #23416f;
+        }
+
+        .rom-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 8px;
+            max-height: 280px;
+            overflow: auto;
+            padding-right: 4px;
+        }
+
+        .rom-entry {
+            border: 1px solid #3f5b8f;
+            background: #10203d;
+            color: #e4eeff;
+            border-radius: 8px;
+            text-align: left;
+            padding: 8px 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .rom-entry:hover {
+            background: #17305c;
+            border-color: #7da9ff;
+        }
+
         @media screen and (max-width: 700px) {
             body {
                 padding: 14px;
@@ -139,6 +234,10 @@
             #game {
                 height: min(62vh, 520px);
             }
+
+            .rom-tools {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -152,10 +251,29 @@
         <div class="controls">
             <label class="file-input" for="rom-input">Load ROM</label>
             <input id="rom-input" type="file" accept=".zip,.7z,.gba,.gb,.gbc,.nes,.sfc,.smc,.n64,.z64,.v64,.nds,.cue,.bin,.chd,.iso,.gen,.sms,.gg,.a26,.a52,.a78,.lnx,.vb,.ws,.wsc">
+            <button class="fullscreen" id="random-rom-btn" type="button" disabled>Play Random ROM</button>
             <button class="fullscreen" id="fullscreen-btn" type="button">Fullscreen</button>
             <button class="close" id="close-btn" type="button">Close Emulator</button>
             <a class="back" href="../../index.html#emulators">Back to list</a>
         </div>
+
+        <section id="rom-library" class="rom-library" hidden>
+            <h2>ROM Library</h2>
+            <p id="rom-status" class="rom-status">Loading ROM list...</p>
+            <input id="rom-search" class="rom-search" type="search" placeholder="Search ROM by title or extension..." autocomplete="off" spellcheck="false">
+            <div class="rom-tools">
+                <select id="rom-extension" class="rom-select" aria-label="Filter by extension">
+                    <option value="">All extensions</option>
+                </select>
+                <select id="rom-sort" class="rom-select" aria-label="Sort ROMs">
+                    <option value="az">Sort: A-Z</option>
+                    <option value="za">Sort: Z-A</option>
+                    <option value="random">Sort: Random</option>
+                </select>
+                <button id="rom-clear" class="rom-clear" type="button">Clear</button>
+            </div>
+            <div id="rom-list" class="rom-list"></div>
+        </section>
 
         <div id="game"></div>
     </main>
@@ -164,15 +282,32 @@
         const params = new URLSearchParams(window.location.search);
         const core = params.get('core') || 'nes';
         const systemName = params.get('name') || 'Emulator';
+        const romDir = params.get('romDir') || '';
+        const romPath = params.get('rom') || '';
+        const allowedRomExtensions = new Set([
+            'zip', '7z', 'gba', 'gb', 'gbc', 'nes', 'fds', 'sfc', 'smc', 'n64', 'z64', 'v64',
+            'nds', 'cue', 'bin', 'chd', 'iso', 'gen', 'sms', 'gg', 'a26', 'a52', 'a78', 'lnx',
+            'vb', 'ws', 'wsc', 'pce'
+        ]);
 
         document.getElementById('system-name').textContent = systemName;
         document.getElementById('core-label').textContent = `CORE: ${core}`;
 
         const romInput = document.getElementById('rom-input');
+        const randomRomBtn = document.getElementById('random-rom-btn');
         const fullscreenBtn = document.getElementById('fullscreen-btn');
         const closeBtn = document.getElementById('close-btn');
         const gameContainer = document.getElementById('game');
+        const romLibrary = document.getElementById('rom-library');
+        const romStatus = document.getElementById('rom-status');
+        const romSearch = document.getElementById('rom-search');
+        const romExtension = document.getElementById('rom-extension');
+        const romSort = document.getElementById('rom-sort');
+        const romClear = document.getElementById('rom-clear');
+        const romList = document.getElementById('rom-list');
         let objectUrl = '';
+        let loadedRomEntries = [];
+        let visibleRomEntries = [];
 
         function clearOldUrl() {
             if (objectUrl) {
@@ -203,12 +338,265 @@
             document.body.appendChild(loader);
         }
 
+        function bootFromRomUrl(romUrl) {
+            clearOldUrl();
+            document.getElementById('game').innerHTML = '';
+
+            window.EJS_player = '#game';
+            window.EJS_core = core;
+            window.EJS_gameUrl = romUrl;
+            window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+
+            const oldLoader = document.getElementById('ejs-loader');
+            if (oldLoader) {
+                oldLoader.remove();
+            }
+
+            const loader = document.createElement('script');
+            loader.id = 'ejs-loader';
+            loader.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+            loader.async = true;
+            document.body.appendChild(loader);
+        }
+
+        function getFileExtension(pathname) {
+            const chunks = pathname.split('.');
+            if (chunks.length < 2) {
+                return '';
+            }
+            return chunks[chunks.length - 1].toLowerCase();
+        }
+
+        function normalizeDisplayName(pathname) {
+            const fileName = pathname.split('/').pop() || pathname;
+            return decodeURIComponent(fileName);
+        }
+
+        function renderRomButtons(entries) {
+            romList.innerHTML = '';
+
+            entries.forEach((entry) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'rom-entry';
+                button.textContent = entry.name;
+                button.addEventListener('click', () => {
+                    bootFromRomUrl(entry.url);
+                });
+                romList.appendChild(button);
+            });
+        }
+
+        function shuffleEntries(entries) {
+            const shuffled = [...entries];
+            for (let index = shuffled.length - 1; index > 0; index -= 1) {
+                const randomIndex = Math.floor(Math.random() * (index + 1));
+                [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+            }
+            return shuffled;
+        }
+
+        function updateExtensionOptions(entries) {
+            if (!romExtension) {
+                return;
+            }
+
+            const previousValue = romExtension.value;
+            const extensions = [...new Set(entries.map((entry) => entry.ext).filter(Boolean))].sort();
+
+            romExtension.innerHTML = '<option value="">All extensions</option>';
+            extensions.forEach((ext) => {
+                const option = document.createElement('option');
+                option.value = ext;
+                option.textContent = `.${ext}`;
+                romExtension.appendChild(option);
+            });
+
+            if (extensions.includes(previousValue)) {
+                romExtension.value = previousValue;
+            }
+        }
+
+        function getFilteredEntries() {
+            const query = (romSearch ? romSearch.value : '').trim().toLowerCase();
+            const selectedExt = (romExtension ? romExtension.value : '').trim().toLowerCase();
+            const sortMode = romSort ? romSort.value : 'az';
+
+            let entries = loadedRomEntries;
+
+            if (selectedExt) {
+                entries = entries.filter((entry) => entry.ext === selectedExt);
+            }
+
+            if (query) {
+                entries = entries.filter((entry) => {
+                    const titleMatch = entry.name.toLowerCase().includes(query);
+                    const extMatch = entry.ext.includes(query.replace('.', ''));
+                    return titleMatch || extMatch;
+                });
+            }
+
+            if (sortMode === 'za') {
+                return [...entries].sort((a, b) => b.name.localeCompare(a.name));
+            }
+
+            if (sortMode === 'random') {
+                return shuffleEntries(entries);
+            }
+
+            return [...entries].sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        function renderVisibleEntries() {
+            visibleRomEntries = getFilteredEntries();
+            renderRomButtons(visibleRomEntries);
+
+            if (!romStatus) {
+                return;
+            }
+
+            if (loadedRomEntries.length === 0) {
+                romStatus.textContent = 'No ROM files found in this folder.';
+                return;
+            }
+
+            const query = (romSearch ? romSearch.value : '').trim();
+            const selectedExt = (romExtension ? romExtension.value : '').trim();
+            if (!query && !selectedExt) {
+                romStatus.textContent = `Found ${loadedRomEntries.length} ROMs. Click a title to play.`;
+                return;
+            }
+
+            const queryPart = query ? `"${query}"` : 'all titles';
+            const extPart = selectedExt ? ` and .${selectedExt}` : '';
+            romStatus.textContent = `Showing ${visibleRomEntries.length} of ${loadedRomEntries.length} ROMs for ${queryPart}${extPart}.`;
+        }
+
+        function syncRandomButtonState() {
+            if (!randomRomBtn) {
+                return;
+            }
+
+            const hasEntries = visibleRomEntries.length > 0;
+            randomRomBtn.disabled = !hasEntries;
+            randomRomBtn.textContent = hasEntries ? 'Play Random ROM' : 'No ROMs Available';
+        }
+
+        function playRandomRom() {
+            if (visibleRomEntries.length === 0) {
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * visibleRomEntries.length);
+            const randomEntry = visibleRomEntries[randomIndex];
+            bootFromRomUrl(randomEntry.url);
+        }
+
+        async function loadRomLibrary() {
+            if (!romDir || !romLibrary || !romStatus || !romList) {
+                syncRandomButtonState();
+                return;
+            }
+
+            romLibrary.hidden = false;
+            romStatus.textContent = `Loading ROM list for ${romDir}...`;
+
+            try {
+                const romFolderUrl = new URL(`./roms/${encodeURIComponent(romDir)}/`, window.location.href);
+                const response = await fetch(romFolderUrl.toString());
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = Array.from(doc.querySelectorAll('a'));
+
+                const romEntries = links
+                    .map((anchor) => anchor.getAttribute('href'))
+                    .filter((href) => href && href !== '../' && !href.endsWith('/'))
+                    .map((href) => new URL(href, romFolderUrl.toString()))
+                    .filter((url) => allowedRomExtensions.has(getFileExtension(url.pathname)))
+                    .map((url) => ({
+                        name: normalizeDisplayName(url.pathname),
+                        ext: getFileExtension(url.pathname),
+                        url: url.toString()
+                    }))
+                    .sort((a, b) => a.name.localeCompare(b.name));
+
+                if (romEntries.length === 0) {
+                    loadedRomEntries = [];
+                    visibleRomEntries = [];
+                    renderRomButtons([]);
+                    syncRandomButtonState();
+                    romStatus.textContent = 'No ROM files found in this folder.';
+                    return;
+                }
+
+                loadedRomEntries = romEntries;
+                updateExtensionOptions(loadedRomEntries);
+                renderVisibleEntries();
+                syncRandomButtonState();
+            } catch (error) {
+                loadedRomEntries = [];
+                visibleRomEntries = [];
+                renderRomButtons([]);
+                syncRandomButtonState();
+                romStatus.textContent = 'Could not load ROM directory listing from this server. Use Load ROM instead.';
+                console.error('ROM library load failed:', error);
+            }
+        }
+
         romInput.addEventListener('change', (event) => {
             const [file] = event.target.files;
             if (file) {
                 boot(file);
             }
         });
+
+        if (randomRomBtn) {
+            randomRomBtn.addEventListener('click', playRandomRom);
+        }
+
+        if (romSearch) {
+            romSearch.addEventListener('input', () => {
+                renderVisibleEntries();
+                syncRandomButtonState();
+            });
+        }
+
+        if (romExtension) {
+            romExtension.addEventListener('change', () => {
+                renderVisibleEntries();
+                syncRandomButtonState();
+            });
+        }
+
+        if (romSort) {
+            romSort.addEventListener('change', () => {
+                renderVisibleEntries();
+                syncRandomButtonState();
+            });
+        }
+
+        if (romClear) {
+            romClear.addEventListener('click', () => {
+                if (romSearch) {
+                    romSearch.value = '';
+                }
+                if (romExtension) {
+                    romExtension.value = '';
+                }
+                if (romSort) {
+                    romSort.value = 'az';
+                }
+
+                renderVisibleEntries();
+                syncRandomButtonState();
+            });
+        }
 
         fullscreenBtn.addEventListener('click', async () => {
             try {
@@ -229,6 +617,13 @@
             }
             window.location.href = '../../index.html#emulators';
         });
+
+        if (romPath) {
+            const romUrl = new URL(romPath, window.location.href).toString();
+            bootFromRomUrl(romUrl);
+        }
+
+        loadRomLibrary();
 
         window.addEventListener('beforeunload', clearOldUrl);
     </script>

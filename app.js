@@ -4,8 +4,17 @@ const navAnchors = document.querySelectorAll('.navbar__links, .navbar__btn .butt
 
 const universalBase = 'emulators/universal/index.html';
 
-function buildUniversalLink(core, name) {
-    return `${universalBase}?core=${encodeURIComponent(core)}&name=${encodeURIComponent(name)}`;
+function buildUniversalLink(core, name, romDir = '') {
+    const params = new URLSearchParams({
+        core,
+        name
+    });
+
+    if (romDir) {
+        params.set('romDir', romDir);
+    }
+
+    return `${universalBase}?${params.toString()}`;
 }
 
 function compatibilityClass(level) {
@@ -39,23 +48,29 @@ if (menu && menuLinks) {
 }
 
 const emulatorCatalog = [
-    { name: 'Game Boy', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gb', 'Game Boy') },
-    { name: 'Game Boy Color', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gbc', 'Game Boy Color') },
-    { name: 'Game Boy Advance', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gba', 'Game Boy Advance') },
-    { name: 'NES', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('nes', 'NES') },
-    { name: 'SNES', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('snes', 'SNES') },
-    { name: 'Nintendo 64', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('n64', 'Nintendo 64') },
-    { name: 'Nintendo DS', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('nds', 'Nintendo DS') },
+    { name: 'Game Boy', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gb', 'Game Boy', 'gb') },
+    { name: 'Game Boy Color', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gbc', 'Game Boy Color', 'gbc') },
+    { name: 'Game Boy Advance', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gba', 'Game Boy Advance', 'gba') },
+    { name: 'NES', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('nes', 'NES', 'nes') },
+    { name: 'Famicom Disk System', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('nes', 'Famicom Disk System', 'fds') },
+    { name: 'SNES', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('snes', 'SNES', 'snes') },
+    { name: 'Nintendo 64', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('n64', 'Nintendo 64', 'n64') },
+    { name: 'Nintendo DS', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('nds', 'Nintendo DS', 'nds') },
     { name: 'Virtual Boy', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: false, page: buildUniversalLink('vb', 'Virtual Boy') },
-    { name: 'Sega Master System', manufacturer: 'Sega', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('segaMS', 'Sega Master System') },
+    { name: 'Sega Master System', manufacturer: 'Sega', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('segaMS', 'Sega Master System', 'mastersystem') },
+    { name: 'Sega SG-1000', manufacturer: 'Sega', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('segaMS', 'Sega SG-1000', 'sg-1000') },
     { name: 'Sega Genesis', manufacturer: 'Sega', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('segaMD', 'Sega Genesis') },
-    { name: 'Sega Game Gear', manufacturer: 'Sega', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('segaGG', 'Sega Game Gear') },
+    { name: 'Sega 32X', manufacturer: 'Sega', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: false, page: buildUniversalLink('sega32x', 'Sega 32X', 'sega32x') },
+    { name: 'Sega Game Gear', manufacturer: 'Sega', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('segaGG', 'Sega Game Gear', 'gamegear') },
     { name: 'Sega CD', manufacturer: 'Sega', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: false, page: buildUniversalLink('segaCD', 'Sega CD') },
     { name: 'PlayStation 1', manufacturer: 'Sony', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: false, page: buildUniversalLink('psx', 'PlayStation 1') },
-    { name: 'Atari 2600', manufacturer: 'Atari', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('atari2600', 'Atari 2600') },
+    { name: 'Atari 2600', manufacturer: 'Atari', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('atari2600', 'Atari 2600', 'atari2600') },
     { name: 'Atari 5200', manufacturer: 'Atari', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('atari5200', 'Atari 5200') },
-    { name: 'Atari 7800', manufacturer: 'Atari', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('atari7800', 'Atari 7800') },
-    { name: 'Atari Lynx', manufacturer: 'Atari', type: 'Handheld', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('lynx', 'Atari Lynx') },
+    { name: 'Atari 7800', manufacturer: 'Atari', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('atari7800', 'Atari 7800', 'atari7800') },
+    { name: 'Atari Lynx', manufacturer: 'Atari', type: 'Handheld', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('lynx', 'Atari Lynx', 'atarilynx') },
+    { name: 'Neo Geo Pocket', manufacturer: 'SNK', type: 'Handheld', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('ngp', 'Neo Geo Pocket', 'ngp') },
+    { name: 'Neo Geo Pocket Color', manufacturer: 'SNK', type: 'Handheld', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('ngpc', 'Neo Geo Pocket Color', 'ngpc') },
+    { name: 'PC Engine', manufacturer: 'NEC', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('pce', 'PC Engine', 'pcengine') },
     { name: 'WonderSwan', manufacturer: 'Bandai', type: 'Handheld', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('ws', 'WonderSwan') },
     { name: 'WonderSwan Color', manufacturer: 'Bandai', type: 'Handheld', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('wsc', 'WonderSwan Color') },
     { name: 'Arcade (MAME 2003)', manufacturer: 'Multiple', type: 'Arcade', status: 'Playable', compatibility: 'Experimental', mobileReady: false, page: buildUniversalLink('mame2003', 'Arcade MAME 2003') }
