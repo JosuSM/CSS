@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Retro Records | Archive</title>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+	<nav class="navbar">
+		<div class="navbar__container">
+			<a href="index.html" id="navbar__logo"><i class="fas fa-record-vinyl"></i>Retro Records</a>
+
+			<div class="navbar__toggle" id="mobile-menu">
+				<span class="bar"></span>
+				<span class="bar"></span>
+				<span class="bar"></span>
+			</div>
+
+			<ul class="navbar__menu">
+				<li class="navbar__item"><a href="index.html" class="navbar__links">Home</a></li>
+				<li class="navbar__item"><a href="times.html" class="navbar__links" aria-current="page">Times</a></li>
+				<li class="navbar__item"><a href="products.html" class="navbar__links">Products</a></li>
+				<li class="navbar__btn"><a href="partnership.html" class="button">Partnership</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<header class="archive-hero">
+		<div class="archive-hero__inner">
+			<p class="archive-kicker">Collector Index</p>
+			<h1>Old Videogame Magazines and Arcade Posters</h1>
+			<p class="archive-subtitle">A curated shelf of iconic print media from 1979 to 2001, organized by decade and format.</p>
+		</div>
+	</header>
+
+	<main class="archive-main">
+		<section class="archive-controls" aria-label="Archive filters">
+			<div class="archive-search-wrap">
+				<label for="archive-search">Search title, publisher, game or artist</label>
+				<input id="archive-search" type="search" placeholder="Ex: Nintendo Power, Street Fighter, Capcom" autocomplete="off">
+			</div>
+
+			<div class="archive-filters" role="group" aria-label="Filter by decade">
+				<button type="button" class="archive-filter is-active" data-filter="all" aria-pressed="true">All Decades</button>
+				<button type="button" class="archive-filter" data-filter="1970s" aria-pressed="false">1970s</button>
+				<button type="button" class="archive-filter" data-filter="1980s" aria-pressed="false">1980s</button>
+				<button type="button" class="archive-filter" data-filter="1990s" aria-pressed="false">1990s</button>
+				<button type="button" class="archive-filter" data-filter="2000s" aria-pressed="false">2000s</button>
+			</div>
+			<p id="archive-count" class="archive-count" aria-live="polite">Showing 0 entries</p>
+		</section>
+
+		<section class="archive-group" aria-labelledby="magazines-title">
+			<div class="archive-group__header">
+				<h2 id="magazines-title">Videogame Magazines</h2>
+				<p>Issues that shaped gaming culture and launch cycles.</p>
+			</div>
+			<div id="magazine-grid" class="archive-grid" aria-live="polite"></div>
+		</section>
+
+		<section class="archive-group" aria-labelledby="posters-title">
+			<div class="archive-group__header">
+				<h2 id="posters-title">Arcade Posters</h2>
+				<p>Promotional key art from cabinets, tournaments and operator kits.</p>
+			</div>
+			<div id="poster-grid" class="archive-grid" aria-live="polite"></div>
+		</section>
+	</main>
+
+	<footer id="footer">
+		<p>Built with <i class="fas fa-heart"></i> for the Web</p>
+		<div style="margin-top: 10px;">
+			<a href="#"><i class="fab fa-github"></i></a>
+			<a href="#"><i class="fab fa-linkedin"></i></a>
+			<a href="#"><i class="fab fa-twitter"></i></a>
+			<a href="#"><i class="fab fa-instagram"></i></a>
+			<a href="#"><i class="fab fa-youtube"></i></a>
+			<a href="#"><i class="fab fa-discord"></i></a>
+			<a href="#"><i class="fab fa-reddit"></i></a>
+		</div>
+	</footer>
+
+	<script type="module" src="./app.js"></script>
+	<script type="module" src="./times.js"></script>
+</body>
+</html>

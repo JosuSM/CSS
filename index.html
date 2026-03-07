@@ -17,7 +17,7 @@
 
     <nav class="navbar">
         <div class="navbar__container">
-            <a href="/" id="navbar__logo"><i class="fas fa-record-vinyl"></i>Retro Records</a>
+            <a href="index.html" id="navbar__logo"><i class="fas fa-record-vinyl"></i>Retro Records</a>
             
             <div class="navbar__toggle" id="mobile-menu">
                 <span class="bar"></span>
@@ -26,26 +26,73 @@
             </div>
             
             <ul class="navbar__menu">
-                <li class="navbar__item"><a href="/" class="navbar__links">Home</a></li>
-                <li class="navbar__item"><a href="/" class="navbar__links">Services</a></li>
-                <li class="navbar__item"><a href="/" class="navbar__links">Products</a></li>
-                <li class="navbar__btn"><a href="#emulators" class="button">Emulators</a></li>
+                <li class="navbar__item"><a href="index.html" class="navbar__links" aria-current="page">Home</a></li>
+                <li class="navbar__item"><a href="times.html" class="navbar__links">Times</a></li>
+                <li class="navbar__item"><a href="products.html" class="navbar__links">Products</a></li>
+                <li class="navbar__btn"><a href="partnership.html" class="button">Partnership</a></li>
             </ul>
         </div>
     </nav>
 
-    <div class="main">
+    <header class="main">
+        <div class="main__power-sweep" aria-hidden="true"></div>
         <div class="main__container">
             <div class="main__content">
-                <h1>Traveling Through Time</h1>
-                <p>Nostalgia is here</p>
-                <button class="main__btn"><a href="#emulators">Get Started</a></button>
+                <p class="main__kicker">Neon Era Interface</p>
+                <h1>Press Start On Your Retro Universe</h1>
+                <p>Arcade posters, print magazine archives, handheld catalogs, and emulators in one nostalgic station.</p>
+                <div class="main__actions">
+                    <a class="main__btn main__btn--link" href="times.html"><span>Magazine and Poster Index</span></a>
+                    <a class="main__btn main__btn--link" href="#emulators"><span>Launch Emulators</span></a>
+                </div>
             </div>
             <div class="main__im--container">
-                <img src="Vinyl.gif" alt="Vinyl record spinning on a turntable, evoking a nostalgic and retro atmosphere" id="main__img">
+                <img src="Vinyl.gif" alt="Retro visual loop representing old-school media culture" id="main__img">
             </div>
         </div>
-    </div>
+    </header>
+
+    <section class="home-ticker" aria-label="Retro highlights">
+        <div class="home-ticker__track">
+            <span>1980s Arcade Flyers</span>
+            <span>1990s Magazine Covers</span>
+            <span>Classic Handheld Price Index</span>
+            <span>Playable Emulator Directory</span>
+            <span>Collector Notes and Time Capsules</span>
+            <span>1980s Arcade Flyers</span>
+            <span>1990s Magazine Covers</span>
+            <span>Classic Handheld Price Index</span>
+            <span>Playable Emulator Directory</span>
+            <span>Collector Notes and Time Capsules</span>
+        </div>
+    </section>
+
+    <section class="home-portals" aria-labelledby="home-portals-title">
+        <div class="home-portals__container">
+            <h2 id="home-portals-title">Choose Your Time Portal</h2>
+            <p>Jump straight to each part of the project and browse by format.</p>
+
+            <div class="home-portals__grid">
+                <article class="portal-card">
+                    <h3>Times</h3>
+                    <p>Index old videogame magazines and arcade posters by decade.</p>
+                    <a href="times.html">Open Times</a>
+                </article>
+
+                <article class="portal-card">
+                    <h3>Products</h3>
+                    <p>Compare classic handheld systems and current second-hand price ranges.</p>
+                    <a href="products.html">Open Products</a>
+                </article>
+
+                <article class="portal-card">
+                    <h3>Partnership</h3>
+                    <p>Explore the collaboration page and featured retro creative corner.</p>
+                    <a href="partnership.html">Open Partnership</a>
+                </article>
+            </div>
+        </div>
+    </section>
 
     <section id="emulators" class="emulators">
         <div class="emulators__container">

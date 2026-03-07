@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Records | Handheld Price Index</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .handheld-hero {
+            min-height: 48vh;
+            display: grid;
+            place-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 40px 16px;
+            text-align: center;
+        }
+
+        .handheld-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(125deg, rgba(19, 19, 19, 0.78), rgba(19, 19, 19, 0.92)),
+                url('gameboycolor-1772714242973-3043.jpg') center/cover no-repeat;
+            transform: scale(1.05);
+            z-index: 0;
+        }
+
+        .handheld-hero__content {
+            position: relative;
+            z-index: 1;
+            max-width: 980px;
+            color: #fff;
+        }
+
+        .handheld-hero h1 {
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            margin-bottom: 12px;
+            background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .handheld-hero p {
+            color: #e6ebf7;
+            line-height: 1.6;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .handheld-directory {
+            padding: 70px 14px;
+            background: radial-gradient(circle at top, #1f2433 0%, #121212 58%, #070707 100%);
+            color: #fff;
+        }
+
+        .handheld-directory__inner {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .handheld-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .handheld-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .handheld-filter {
+            border: 1px solid rgba(133, 163, 226, 0.45);
+            background: rgba(30, 43, 72, 0.9);
+            color: #d8e4ff;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .handheld-filter:hover {
+            border-color: rgba(247, 112, 98, 0.75);
+            color: #fff;
+        }
+
+        .handheld-filter.is-active {
+            background: linear-gradient(120deg, #f77062 0%, #ff9a5f 100%);
+            color: #1b1322;
+            border-color: rgba(255, 173, 129, 0.8);
+        }
+
+        .handheld-sort {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #cdd6ec;
+            font-size: 0.85rem;
+        }
+
+        .handheld-sort select {
+            background: rgba(18, 24, 38, 0.95);
+            color: #fff;
+            border: 1px solid rgba(247, 112, 98, 0.45);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-family: inherit;
+        }
+
+        .handheld-count {
+            color: #b7c2de;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+        }
+
+        .handheld-table-wrap {
+            border: 1px solid rgba(247, 112, 98, 0.35);
+            border-radius: 14px;
+            overflow: auto;
+            background: rgba(22, 28, 40, 0.94);
+        }
+
+        .handheld-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 920px;
+        }
+
+        .handheld-table th,
+        .handheld-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(133, 163, 226, 0.2);
+            text-align: left;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .handheld-table th {
+            color: #f8d7a1;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(31, 38, 56, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .handheld-table td {
+            color: #e5ebfa;
+            font-size: 0.9rem;
+        }
+
+        .handheld-table tr.is-hidden {
+            display: none;
+        }
+
+        .price-badge {
+            display: inline-flex;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            border: 1px solid rgba(124, 243, 190, 0.35);
+            color: #7cf3be;
+            background: rgba(2, 179, 106, 0.2);
+        }
+
+        .buy-link {
+            display: inline-flex;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #101115;
+            background: linear-gradient(120deg, #ff9a5f 0%, #ffd27c 100%);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+        }
+
+        .buy-link:hover {
+            filter: brightness(1.08);
+        }
+
+        .handheld-note {
+            margin-top: 12px;
+            color: #a6b4d8;
+            font-size: 0.78rem;
+            line-height: 1.6;
+        }
+
+        @media screen and (max-width: 700px) {
+            .handheld-directory {
+                padding: 54px 10px;
+            }
+
+            .handheld-toolbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar__container">
+            <a href="index.html" id="navbar__logo"><i class="fas fa-record-vinyl"></i>Retro Records</a>
+
+            <div class="navbar__toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+
+            <ul class="navbar__menu">
+                <li class="navbar__item"><a href="index.html" class="navbar__links">Home</a></li>
+                <li class="navbar__item"><a href="times.html" class="navbar__links">Times</a></li>
+                <li class="navbar__item"><a href="products.html" class="navbar__links" aria-current="page">Products</a></li>
+                <li class="navbar__btn"><a href="partnership.html" class="button">Partnership</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="handheld-hero">
+        <div class="handheld-hero__content">
+            <h1>Retro Handheld Index</h1>
+            <p>
+                A timeline-based directory of classic handheld systems with average current market prices
+                and quick links to buy them. Use the era filter and sorting controls to compare by time.
+            </p>
+        </div>
+    </header>
+
+    <main class="handheld-directory">
+        <div class="handheld-directory__inner">
+            <div class="handheld-toolbar">
+                <div class="handheld-filters" role="tablist" aria-label="Filter by era">
+                    <button class="handheld-filter is-active" data-era="all" aria-pressed="true">All</button>
+                    <button class="handheld-filter" data-era="1970s" aria-pressed="false">1970s</button>
+                    <button class="handheld-filter" data-era="1980s" aria-pressed="false">1980s</button>
+                    <button class="handheld-filter" data-era="1990s" aria-pressed="false">1990s</button>
+                    <button class="handheld-filter" data-era="2000s" aria-pressed="false">2000s</button>
+                    <button class="handheld-filter" data-era="2010s" aria-pressed="false">2010s</button>
+                </div>
+
+                <label class="handheld-sort" for="sort-by-year">
+                    Sort by time:
+                    <select id="sort-by-year">
+                        <option value="asc">Oldest to newest</option>
+                        <option value="desc">Newest to oldest</option>
+                    </select>
+                </label>
+            </div>
+
+            <p id="handheld-count" class="handheld-count" aria-live="polite">Showing 0 handhelds</p>
+
+            <div class="handheld-table-wrap">
+                <table class="handheld-table" aria-label="Retro handheld index">
+                    <thead>
+                        <tr>
+                            <th>Handheld</th>
+                            <th>Brand</th>
+                            <th>Released</th>
+                            <th>Era</th>
+                            <th>Current Price (EUR)</th>
+                            <th>Buy Link</th>
+                        </tr>
+                    </thead>
+                    <tbody id="handheld-table-body">
+                        <tr data-era="1970s" data-year="1979">
+                            <td>Microvision</td>
+                            <td>Milton Bradley</td>
+                            <td>1979</td>
+                            <td>1970s</td>
+                            <td><span class="price-badge">€110 - €240</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Milton+Bradley+Microvision" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="1980s" data-year="1989">
+                            <td>Game Boy</td>
+                            <td>Nintendo</td>
+                            <td>1989</td>
+                            <td>1980s</td>
+                            <td><span class="price-badge">€65 - €150</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Nintendo+Game+Boy+DMG-01" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="1980s" data-year="1989">
+                            <td>Atari Lynx</td>
+                            <td>Atari</td>
+                            <td>1989</td>
+                            <td>1980s</td>
+                            <td><span class="price-badge">€120 - €260</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Atari+Lynx+console" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="1990s" data-year="1990">
+                            <td>Game Gear</td>
+                            <td>Sega</td>
+                            <td>1990</td>
+                            <td>1990s</td>
+                            <td><span class="price-badge">€75 - €165</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Sega+Game+Gear" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="1990s" data-year="1995">
+                            <td>Virtual Boy</td>
+                            <td>Nintendo</td>
+                            <td>1995</td>
+                            <td>1990s</td>
+                            <td><span class="price-badge">€200 - €415</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Nintendo+Virtual+Boy" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="1990s" data-year="1996">
+                            <td>Game Boy Pocket</td>
+                            <td>Nintendo</td>
+                            <td>1996</td>
+                            <td>1990s</td>
+                            <td><span class="price-badge">€65 - €140</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Nintendo+Game+Boy+Pocket" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="1990s" data-year="1998">
+                            <td>Game Boy Color</td>
+                            <td>Nintendo</td>
+                            <td>1998</td>
+                            <td>1990s</td>
+                            <td><span class="price-badge">€60 - €130</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Nintendo+Game+Boy+Color" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="1990s" data-year="1999">
+                            <td>Neo Geo Pocket Color</td>
+                            <td>SNK</td>
+                            <td>1999</td>
+                            <td>1990s</td>
+                            <td><span class="price-badge">€110 - €240</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Neo+Geo+Pocket+Color" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="2000s" data-year="2000">
+                            <td>WonderSwan Color</td>
+                            <td>Bandai</td>
+                            <td>2000</td>
+                            <td>2000s</td>
+                            <td><span class="price-badge">€85 - €165</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=WonderSwan+Color" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="2000s" data-year="2001">
+                            <td>Game Boy Advance</td>
+                            <td>Nintendo</td>
+                            <td>2001</td>
+                            <td>2000s</td>
+                            <td><span class="price-badge">€65 - €140</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Nintendo+Game+Boy+Advance" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="2000s" data-year="2004">
+                            <td>PlayStation Portable (PSP)</td>
+                            <td>Sony</td>
+                            <td>2004</td>
+                            <td>2000s</td>
+                            <td><span class="price-badge">€55 - €130</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Sony+PSP+1000" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="2000s" data-year="2006">
+                            <td>Nintendo DS Lite</td>
+                            <td>Nintendo</td>
+                            <td>2006</td>
+                            <td>2000s</td>
+                            <td><span class="price-badge">€40 - €100</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=Nintendo+DS+Lite" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                        <tr data-era="2010s" data-year="2011">
+                            <td>PlayStation Vita</td>
+                            <td>Sony</td>
+                            <td>2011</td>
+                            <td>2010s</td>
+                            <td><span class="price-badge">€100 - €240</span></td>
+                            <td><a class="buy-link" href="https://www.ebay.com/sch/i.html?_nkw=PlayStation+Vita+PCH-1000" target="_blank" rel="noopener noreferrer">Buy</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="handheld-note">
+                Prices are approximate second-hand market ranges and can change by condition, region, and accessories.
+                Last updated: March 2026.
+            </p>
+        </div>
+    </main>
+
+    <footer id="footer">
+        <p>Built with <i class="fas fa-heart"></i> for the Web</p>
+        <div style="margin-top: 10px;">
+            <a href="#"><i class="fab fa-github"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-discord"></i></a>
+            <a href="#"><i class="fab fa-reddit"></i></a>
+        </div>
+    </footer>
+
+    <script type="module" src="./app.js"></script>
+    <script>
+        const filterButtons = document.querySelectorAll('.handheld-filter');
+        const handheldRows = Array.from(document.querySelectorAll('#handheld-table-body tr'));
+        const tableBody = document.getElementById('handheld-table-body');
+        const countLabel = document.getElementById('handheld-count');
+        const sortSelect = document.getElementById('sort-by-year');
+
+        let currentEra = 'all';
+
+        function updateCount() {
+            const visibleRows = handheldRows.filter((row) => !row.classList.contains('is-hidden')).length;
+            const label = visibleRows === 1 ? 'handheld' : 'handhelds';
+            countLabel.textContent = `Showing ${visibleRows} ${label}`;
+        }
+
+        function applyEraFilter() {
+            handheldRows.forEach((row) => {
+                const rowEra = row.dataset.era;
+                const isVisible = currentEra === 'all' || rowEra === currentEra;
+                row.classList.toggle('is-hidden', !isVisible);
+            });
+            updateCount();
+        }
+
+        function sortByYear(direction) {
+            const sorted = [...handheldRows].sort((a, b) => {
+                const yearA = Number(a.dataset.year);
+                const yearB = Number(b.dataset.year);
+                return direction === 'asc' ? yearA - yearB : yearB - yearA;
+            });
+
+            sorted.forEach((row) => tableBody.appendChild(row));
+        }
+
+        filterButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                currentEra = button.dataset.era || 'all';
+
+                filterButtons.forEach((candidate) => {
+                    candidate.classList.remove('is-active');
+                    candidate.setAttribute('aria-pressed', 'false');
+                });
+
+                button.classList.add('is-active');
+                button.setAttribute('aria-pressed', 'true');
+
+                applyEraFilter();
+            });
+        });
+
+        sortSelect.addEventListener('change', () => {
+            sortByYear(sortSelect.value);
+            applyEraFilter();
+        });
+
+        sortByYear('asc');
+        applyEraFilter();
+    </script>
+</body>
+</html>
