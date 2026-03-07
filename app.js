@@ -14,7 +14,7 @@ function buildUniversalLink(core, name, romDir = '') {
         params.set('romDir', romDir);
     }
 
-    return `${universalBase}?${params.toString()}`;
+    return `${universalBase}#${params.toString()}`;
 }
 
 function compatibilityClass(level) {
