@@ -29,7 +29,7 @@
                 <li class="navbar__item"><a href="/" class="navbar__links">Home</a></li>
                 <li class="navbar__item"><a href="/" class="navbar__links">Services</a></li>
                 <li class="navbar__item"><a href="/" class="navbar__links">Products</a></li>
-                <li class="navbar__btn"><a href="#signup" class="button" id="open-modal-btn">Sign Up</a></li>
+                <li class="navbar__btn"><a href="#emulators" class="button">Emulators</a></li>
             </ul>
         </div>
     </nav>
@@ -39,13 +39,27 @@
             <div class="main__content">
                 <h1>Traveling Through Time</h1>
                 <p>Nostalgia is here</p>
-                <button class="main__btn"><a href="Gameboy_Emulator/index.html">Get Started</a></button>
+                <button class="main__btn"><a href="#emulators">Get Started</a></button>
             </div>
             <div class="main__im--container">
                 <img src="Vinyl.gif" alt="Vinyl record spinning on a turntable, evoking a nostalgic and retro atmosphere" id="main__img">
             </div>
         </div>
     </div>
+
+    <section id="emulators" class="emulators">
+        <div class="emulators__container">
+            <h2>Full Emulator List</h2>
+            <p>Choose a system and load your own legal ROM dump. No ROM files are hosted in this project.</p>
+            <div class="emu-filters" role="tablist" aria-label="Emulator filters">
+                <button class="emu-filter is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+                <button class="emu-filter" type="button" data-filter="mobile" aria-pressed="false">Mobile Ready</button>
+                <button class="emu-filter" type="button" data-filter="stable" aria-pressed="false">Stable</button>
+            </div>
+            <p id="emu-count" class="emu-count" aria-live="polite">Showing 0 emulators</p>
+            <div id="emu-list" class="emu-grid" aria-live="polite"></div>
+        </div>
+    </section>
 
     <footer id="footer">
         <p>Built with <i class="fas fa-heart"></i> for the Web</p>
@@ -60,65 +74,6 @@
         </div>
     </footer>
 
-    <div id="signup-modal" class="modal">
-        <div class="modal-content container">
-            <span class="close" id="close-modal-btn">&times;</span>
-            <h2>Sign Up</h2>
-            <p>Please fill in this form to create an account.</p>
-            <hr>
-
-            <label for="email"><b>Email</b></label>
-            <input type="text" placeholder="Enter Email" name="email" required>
-
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="psw" required>
-
-            <label for="psw-repeat"><b>Repeat Password</b></label>
-            <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
-
-            <div class="clearfix">
-                <button type="button" class="cancelbtn" id="cancel-btn">Cancel</button>
-                <button type="submit" class="signupbtn">Sign Up</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- Mobile Hamburger Menu Logic ---
-        const mobileMenu = document.querySelector('#mobile-menu');
-        const navbarMenu = document.querySelector('.navbar__menu');
-
-        mobileMenu.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-            navbarMenu.classList.toggle('active');
-        });
-
-        // --- Modal Logic ---
-        const modal = document.getElementById('signup-modal');
-        const openModalBtn = document.getElementById('open-modal-btn');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const cancelBtn = document.getElementById('cancel-btn');
-
-        // Open modal
-        openModalBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent default link behavior
-            modal.style.display = 'block';
-        });
-
-        // Close modal functions
-        const closeModal = () => {
-            modal.style.display = 'none';
-        };
-
-        closeModalBtn.addEventListener('click', closeModal);
-        cancelBtn.addEventListener('click', closeModal);
-
-        // Close modal if user clicks anywhere outside of the modal content
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-    </script>
+    <script type="module" src="./app.js"></script>
 </body>
 </html>
