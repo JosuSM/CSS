@@ -785,6 +785,26 @@
     margin-bottom: 2rem;
 }
 
+.emu-fallback {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 192, 129, 0.42);
+    background: rgba(41, 30, 20, 0.45);
+}
+
+.emu-fallback p {
+    margin: 0 0 10px;
+    color: #ffd8ae;
+    font-size: 0.9rem;
+}
+
+.emu-fallback__button {
+    display: inline-flex;
+    width: auto;
+    padding: 10px 16px;
+}
+
 .emu-filters {
     display: flex;
     gap: 10px;
@@ -948,6 +968,10 @@
 
     .emu-filters {
         gap: 8px;
+    }
+
+    .emu-fallback__button {
+        width: 100%;
     }
 
     .emu-count {

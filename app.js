@@ -2,7 +2,8 @@ const menu = document.querySelector('#mobile-menu');
 const menuLinks = document.querySelector('.navbar__menu');
 const navAnchors = document.querySelectorAll('.navbar__links, .navbar__btn .button');
 
-const universalBase = 'emulators/universal/index.html';
+const universalBase = 'emulators/universal/launcher.html';
+const emulatorBuildId = '20260308';
 
 function buildUniversalLink(core, name, romDir = '') {
     const params = new URLSearchParams({
@@ -14,7 +15,7 @@ function buildUniversalLink(core, name, romDir = '') {
         params.set('romDir', romDir);
     }
 
-    return `${universalBase}#${params.toString()}`;
+    return `${universalBase}?v=${emulatorBuildId}#${params.toString()}`;
 }
 
 function compatibilityClass(level) {
@@ -49,7 +50,7 @@ if (menu && menuLinks) {
 
 const emulatorCatalog = [
     { name: 'Game Boy', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gb', 'Game Boy', 'gb') },
-    { name: 'Game Boy Color', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gbc', 'Game Boy Color', 'gbc') },
+    { name: 'Game Boy Color', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gb', 'Game Boy Color', 'gbc') },
     { name: 'Game Boy Advance', manufacturer: 'Nintendo', type: 'Handheld', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('gba', 'Game Boy Advance', 'gba') },
     { name: 'NES', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Stable', mobileReady: true, page: buildUniversalLink('nes', 'NES', 'nes') },
     { name: 'Famicom Disk System', manufacturer: 'Nintendo', type: 'Console', status: 'Playable', compatibility: 'Good', mobileReady: true, page: buildUniversalLink('nes', 'Famicom Disk System', 'fds') },
