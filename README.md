@@ -1,11 +1,10 @@
-<h1>Hi!</h1>
-<h2>Thanks for visiting my site!</h2>
-<p>All images are taken from the internet, without including the jailbroken logo that was created using Gemini by Google with a prompt made by me.</p>
-<p>This site is not for commercial use.</p>
-<p>Have a great day!</p>
+<h1>Bem-Vindo ao meu Projeto</h1>
+<h2>Obrigado por visitar o meu site!</h2>
+<p>Este site não tem intuito de uso comercial e é puramente experimental.</p>
+<p>Desejos de um bom dia!</p>
 
-<h2>Atualizacao - Emuladores (PT)</h2>
-<p>Foram aplicadas melhorias para tornar o launcher mais estavel em alojamento estatico (Neocities).</p>
+<h2>Atualizacao - Emuladores</h2>
+<p>Foram aplicadas melhorias para tornar o launcher mais estável em alojamento estático(Neocities).</p>
 <ul>
 	<li>Os links de lançamento passaram a usar hash (<code>#core=...</code>) em vez de query string (<code>?core=...</code>).</li>
 	<li>O launcher universal passou a ler parametros apenas via hash para evitar versoes antigas em cache no servidor.</li>
