@@ -3,7 +3,7 @@
 <p>Este site não tem intuito de uso comercial e é puramente experimental.</p>
 <p>Desejos de um bom dia!</p>
 
-<h2>Atualizacao - Emuladores</h2>
+<h2>Atualizacão - Emuladores</h2>
 <p>Foram aplicadas melhorias para tornar o launcher mais estável em alojamento estático(Neocities).</p>
 <ul>
 	<li>Os links de lançamento passaram a usar hash (<code>#core=...</code>) em vez de query string (<code>?core=...</code>).</li>
